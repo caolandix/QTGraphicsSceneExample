@@ -15,7 +15,7 @@ MainWindow::MainWindow()
     createMenus();
 
     scene = new PhysGraphicsScene(itemMenu, this);
-    scene->setSceneRect(QRectF(0, 0, 5000, 5000));
+    scene ->setSceneRect(QRectF(-2000, -2000, 2000, 2000));
     connect(scene, SIGNAL(itemInserted(DiagramItem *)), this, SLOT(itemInserted(DiagramItem *)));
     connect(scene, SIGNAL(textInserted(QGraphicsTextItem *)), this, SLOT(textInserted(QGraphicsTextItem *)));
     connect(scene, SIGNAL(itemSelected(QGraphicsItem *)), this, SLOT(itemSelected(QGraphicsItem *)));
@@ -24,6 +24,9 @@ MainWindow::MainWindow()
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(toolBox);
     view = new QGraphicsView(scene);
+    QTransform trfrm;
+    trfrm.scale(1.0, -1.0);
+    view ->setTransform(trfrm);
     layout->addWidget(view);
 
     QWidget *widget = new QWidget;
@@ -55,112 +58,102 @@ void MainWindow::backgroundButtonGroupClicked(QAbstractButton *button)
     view->update();
 }
 
-void MainWindow::buttonGroupClicked(int id)
-{
-    QList<QAbstractButton *> buttons = buttonGroup->buttons();
+void MainWindow::buttonGroupClicked(int id) {
+    QList<QAbstractButton *> buttons = buttonGroup ->buttons();
     foreach (QAbstractButton *button, buttons) {
-        if (buttonGroup->button(id) != button)
-            button->setChecked(false);
+        if (buttonGroup ->button(id) != button)
+            button ->setChecked(false);
     }
     if (id == InsertTextButton) {
-        scene->setMode(PhysGraphicsScene::InsertText);
-    } else {
-        scene->setItemType(DiagramItem::DiagramType(id));
-        scene->setMode(PhysGraphicsScene::InsertItem);
+        scene ->setMode(PhysGraphicsScene::InsertText);
+    }
+    else {
+        scene ->setItemType(DiagramItem::DiagramType(id));
+        scene ->setMode(PhysGraphicsScene::InsertItem);
     }
 }
 
-void MainWindow::deleteItem()
-{
-    foreach (QGraphicsItem *item, scene->selectedItems()) {
+void MainWindow::deleteItem() {
+    foreach (QGraphicsItem *item, scene ->selectedItems()) {
         if (item->type() == Arrow::Type) {
-            scene->removeItem(item);
+            scene ->removeItem(item);
             Arrow *arrow = qgraphicsitem_cast<Arrow *>(item);
-            arrow->startItem()->removeArrow(arrow);
-            arrow->endItem()->removeArrow(arrow);
+            arrow ->startItem() ->removeArrow(arrow);
+            arrow ->endItem() ->removeArrow(arrow);
             delete item;
         }
     }
 
-    foreach (QGraphicsItem *item, scene->selectedItems()) {
-         if (item->type() == DiagramItem::Type)
-             qgraphicsitem_cast<DiagramItem *>(item)->removeArrows();
-         scene->removeItem(item);
+    foreach (QGraphicsItem *item, scene ->selectedItems()) {
+         if (item ->type() == DiagramItem::Type)
+             qgraphicsitem_cast<DiagramItem *>(item) ->removeArrows();
+         scene ->removeItem(item);
          delete item;
      }
 }
 
-void MainWindow::pointerGroupClicked(int)
-{
-    scene->setMode(PhysGraphicsScene::Mode(pointerTypeGroup->checkedId()));
+void MainWindow::pointerGroupClicked(int) {
+    scene ->setMode(PhysGraphicsScene::Mode(pointerTypeGroup->checkedId()));
 }
 
-void MainWindow::bringToFront()
-{
+void MainWindow::bringToFront() {
     if (scene->selectedItems().isEmpty())
         return;
 
-    QGraphicsItem *selectedItem = scene->selectedItems().first();
-    QList<QGraphicsItem *> overlapItems = selectedItem->collidingItems();
+    QGraphicsItem *selectedItem = scene ->selectedItems().first();
+    QList<QGraphicsItem *> overlapItems = selectedItem ->collidingItems();
 
     qreal zValue = 0;
     foreach (QGraphicsItem *item, overlapItems) {
-        if (item->zValue() >= zValue && item->type() == DiagramItem::Type)
-            zValue = item->zValue() + 0.1;
+        if (item ->zValue() >= zValue && item ->type() == DiagramItem::Type)
+            zValue = item ->zValue() + 0.1;
     }
-    selectedItem->setZValue(zValue);
+    selectedItem ->setZValue(zValue);
 }
 
-void MainWindow::sendToBack()
-{
-    if (scene->selectedItems().isEmpty())
+void MainWindow::sendToBack() {
+    if (scene ->selectedItems().isEmpty())
         return;
 
-    QGraphicsItem *selectedItem = scene->selectedItems().first();
-    QList<QGraphicsItem *> overlapItems = selectedItem->collidingItems();
+    QGraphicsItem *selectedItem = scene ->selectedItems().first();
+    QList<QGraphicsItem *> overlapItems = selectedItem ->collidingItems();
 
     qreal zValue = 0;
     foreach (QGraphicsItem *item, overlapItems) {
-        if (item->zValue() <= zValue && item->type() == DiagramItem::Type)
-            zValue = item->zValue() - 0.1;
+        if (item ->zValue() <= zValue && item ->type() == DiagramItem::Type)
+            zValue = item ->zValue() - 0.1;
     }
-    selectedItem->setZValue(zValue);
+    selectedItem ->setZValue(zValue);
 }
 
-void MainWindow::itemInserted(DiagramItem *item)
-{
-    pointerTypeGroup->button(int(PhysGraphicsScene::MoveItem))->setChecked(true);
-    scene->setMode(PhysGraphicsScene::Mode(pointerTypeGroup->checkedId()));
-    buttonGroup->button(int(item->diagramType()))->setChecked(false);
+void MainWindow::itemInserted(DiagramItem *item) {
+    pointerTypeGroup ->button(int(PhysGraphicsScene::MoveItem)) ->setChecked(true);
+    scene ->setMode(PhysGraphicsScene::Mode(pointerTypeGroup ->checkedId()));
+    buttonGroup ->button(int(item ->diagramType())) ->setChecked(false);
 }
 
-void MainWindow::textInserted(QGraphicsTextItem *)
-{
-    buttonGroup->button(InsertTextButton)->setChecked(false);
-    scene->setMode(PhysGraphicsScene::Mode(pointerTypeGroup->checkedId()));
+void MainWindow::textInserted(QGraphicsTextItem *) {
+    buttonGroup ->button(InsertTextButton) ->setChecked(false);
+    scene ->setMode(PhysGraphicsScene::Mode(pointerTypeGroup ->checkedId()));
 }
 
-void MainWindow::currentFontChanged(const QFont &)
-{
+void MainWindow::currentFontChanged(const QFont &) {
     handleFontChange();
 }
 
-void MainWindow::fontSizeChanged(const QString &)
-{
+void MainWindow::fontSizeChanged(const QString &) {
     handleFontChange();
 }
 
-void MainWindow::sceneScaleChanged(const QString &scale)
-{
+void MainWindow::sceneScaleChanged(const QString &scale) {
     double newScale = scale.left(scale.indexOf(tr("%"))).toDouble() / 100.0;
-    QMatrix oldMatrix = view->matrix();
-    view->resetMatrix();
-    view->translate(oldMatrix.dx(), oldMatrix.dy());
-    view->scale(newScale, newScale);
+    QMatrix oldMatrix = view ->matrix();
+    view ->resetMatrix();
+    view ->translate(oldMatrix.dx(), oldMatrix.dy());
+    view ->scale(newScale, newScale);
 }
 
-void MainWindow::textColorChanged()
-{
+void MainWindow::textColorChanged() {
     textAction = qobject_cast<QAction *>(sender());
     fontColorToolButton->setIcon(createColorToolButtonIcon(
                                      "images/textpointer.png",
@@ -168,8 +161,7 @@ void MainWindow::textColorChanged()
     textButtonTriggered();
 }
 
-void MainWindow::itemColorChanged()
-{
+void MainWindow::itemColorChanged() {
     fillAction = qobject_cast<QAction *>(sender());
     fillColorToolButton->setIcon(createColorToolButtonIcon(
                                      "images/floodfill.png",
@@ -177,8 +169,7 @@ void MainWindow::itemColorChanged()
     fillButtonTriggered();
 }
 
-void MainWindow::lineColorChanged()
-{
+void MainWindow::lineColorChanged() {
     lineAction = qobject_cast<QAction *>(sender());
     lineColorToolButton->setIcon(createColorToolButtonIcon(
                                      "images/linecolor.png",
@@ -186,23 +177,19 @@ void MainWindow::lineColorChanged()
     lineButtonTriggered();
 }
 
-void MainWindow::textButtonTriggered()
-{
+void MainWindow::textButtonTriggered() {
     scene->setTextColor(qvariant_cast<QColor>(textAction->data()));
 }
 
-void MainWindow::fillButtonTriggered()
-{
+void MainWindow::fillButtonTriggered() {
     scene->setItemColor(qvariant_cast<QColor>(fillAction->data()));
 }
 
-void MainWindow::lineButtonTriggered()
-{
+void MainWindow::lineButtonTriggered() {
     scene->setLineColor(qvariant_cast<QColor>(lineAction->data()));
 }
 
-void MainWindow::handleFontChange()
-{
+void MainWindow::handleFontChange() {
     QFont font = fontCombo->currentFont();
     font.setPointSize(fontSizeCombo->currentText().toInt());
     font.setWeight(boldAction->isChecked() ? QFont::Bold : QFont::Normal);
@@ -212,8 +199,7 @@ void MainWindow::handleFontChange()
     scene->setFont(font);
 }
 
-void MainWindow::itemSelected(QGraphicsItem *item)
-{
+void MainWindow::itemSelected(QGraphicsItem *item) {
     DiagramTextItem *textItem =
     qgraphicsitem_cast<DiagramTextItem *>(item);
 
@@ -225,15 +211,11 @@ void MainWindow::itemSelected(QGraphicsItem *item)
     underlineAction->setChecked(font.underline());
 }
 
-void MainWindow::about()
-{
-    QMessageBox::about(this, tr("About Diagram Scene"),
-                       tr("The <b>Diagram Scene</b> example shows "
-                          "use of the graphics framework."));
+void MainWindow::about() {
+    QMessageBox::about(this, tr("About Diagram Scene"), tr("The <b>Diagram Scene</b> example shows use of the graphics framework."));
 }
 
-void MainWindow::createToolBox()
-{
+void MainWindow::createToolBox() {
     buttonGroup = new QButtonGroup(this);
     buttonGroup->setExclusive(false);
     connect(buttonGroup, SIGNAL(buttonClicked(int)),
@@ -288,8 +270,7 @@ void MainWindow::createToolBox()
     toolBox->addItem(backgroundWidget, tr("Backgrounds"));
 }
 
-void MainWindow::createActions()
-{
+void MainWindow::createActions() {
     toFrontAction = new QAction(QIcon("images/bringtofront.png"),
                                 tr("Bring to &Front"), this);
     toFrontAction->setShortcut(tr("Ctrl+F"));
@@ -333,8 +314,7 @@ void MainWindow::createActions()
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 }
 
-void MainWindow::createMenus()
-{
+void MainWindow::createMenus() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(exitAction);
 
@@ -348,8 +328,7 @@ void MainWindow::createMenus()
     aboutMenu->addAction(aboutAction);
 }
 
-void MainWindow::createToolbars()
-{
+void MainWindow::createToolbars() {
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->addAction(deleteAction);
     editToolBar->addAction(toFrontAction);
@@ -435,8 +414,7 @@ void MainWindow::createToolbars()
     pointerToolbar->addWidget(sceneScaleCombo);
 }
 
-QWidget *MainWindow::createBackgroundCellWidget(const QString &text, const QString &image)
-{
+QWidget *MainWindow::createBackgroundCellWidget(const QString &text, const QString &image) {
     QToolButton *button = new QToolButton;
     button->setText(text);
     button->setIcon(QIcon(image));
@@ -454,8 +432,7 @@ QWidget *MainWindow::createBackgroundCellWidget(const QString &text, const QStri
     return widget;
 }
 
-QWidget *MainWindow::createCellWidget(const QString &text, DiagramItem::DiagramType type)
-{
+QWidget *MainWindow::createCellWidget(const QString &text, DiagramItem::DiagramType type) {
 
     DiagramItem item(type, itemMenu);
     QIcon icon(item.image());
@@ -476,8 +453,7 @@ QWidget *MainWindow::createCellWidget(const QString &text, DiagramItem::DiagramT
     return widget;
 }
 
-QMenu *MainWindow::createColorMenu(const char *slot, QColor defaultColor)
-{
+QMenu *MainWindow::createColorMenu(const char *slot, QColor defaultColor) {
     QList<QColor> colors;
     colors << Qt::black << Qt::white << Qt::red << Qt::blue << Qt::yellow;
     QStringList names;
@@ -497,8 +473,7 @@ QMenu *MainWindow::createColorMenu(const char *slot, QColor defaultColor)
     return colorMenu;
 }
 
-QIcon MainWindow::createColorToolButtonIcon(const QString &imageFile, QColor color)
-{
+QIcon MainWindow::createColorToolButtonIcon(const QString &imageFile, QColor color) {
     QPixmap pixmap(50, 80);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
@@ -512,8 +487,7 @@ QIcon MainWindow::createColorToolButtonIcon(const QString &imageFile, QColor col
     return QIcon(pixmap);
 }
 
-QIcon MainWindow::createColorIcon(QColor color)
-{
+QIcon MainWindow::createColorIcon(QColor color) {
     QPixmap pixmap(20, 20);
     QPainter painter(&pixmap);
     painter.setPen(Qt::NoPen);
