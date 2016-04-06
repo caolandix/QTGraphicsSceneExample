@@ -1,8 +1,7 @@
 #include "physgraphicsscene.h"
 #include "arrow.h"
 
-#include <QTextCursor>
-#include <QGraphicsSceneMouseEvent>
+#include <QtWidgets>
 
 PhysGraphicsScene::PhysGraphicsScene(QMenu *itemMenu, QObject *parent) : QGraphicsScene(parent) {
     myItemMenu = itemMenu;
@@ -13,6 +12,63 @@ PhysGraphicsScene::PhysGraphicsScene(QMenu *itemMenu, QObject *parent) : QGraphi
     myItemColor = Qt::white;
     myTextColor = Qt::black;
     myLineColor = Qt::black;
+}
+
+void PhysGraphicsScene::drawBackground(QPainter *painter, const QRectF &rect) {
+    Q_UNUSED(rect);
+
+    QMatrix m;
+    int w_2 = width() / 2;
+    int h_2 = height() / 2;
+
+    painter -> setPen(Qt::blue);
+    painter -> drawLine(0, h_2, width(), h_2);     // X-Axis
+    painter -> drawLine(w_2, 0 , w_2, height());  // Y-Axis
+
+    m.translate(w_2, h_2);
+    m.scale(1, -1);
+
+    painter -> setMatrix(m);
+    painter -> setPen(Qt::NoPen);
+    painter -> setBrush(QBrush(Qt::blue, Qt::Dense4Pattern));
+    painter -> drawRect(-10, -10, 20, 20);
+
+    QLineF y_axis(-10, -10, -10, 10);
+    QLineF x_axis(-10, -10, 10, -10);
+    {
+        QPen pen_x(Qt::red);
+        pen_x.setWidth(2);
+        painter -> setPen(pen_x);
+        painter -> drawLine(x_axis);     // X-Axis
+        QLineF angleLine1(x_axis.p2(), x_axis.p1());
+        QLineF angleLine2(x_axis.p2(), x_axis.p1());
+        angleLine1.setAngle(135);
+        angleLine1.setLength(angleLine1.length() * 0.33);
+        angleLine2.setAngle(-135);
+        angleLine2.setLength(angleLine2.length() * 0.33);
+        painter -> drawLine(angleLine1);
+        painter -> drawLine(angleLine2);
+    }
+
+    {
+        QPen pen_y(Qt::green);
+        pen_y.setWidth(2);
+        painter -> setPen(pen_y);
+        painter -> drawLine(y_axis);  // Y-Axis
+
+        pen_y.setWidth(2);
+        painter -> setPen(pen_y);
+        painter -> drawLine(y_axis);     // X-Axis
+        QLineF angleLine1(y_axis.p2(), y_axis.p1());
+        QLineF angleLine2(y_axis.p2(), y_axis.p1());
+
+        angleLine1.setAngle(45);
+        angleLine1.setLength(angleLine1.length() * 0.33);
+        angleLine2.setAngle(135);
+        angleLine2.setLength(angleLine2.length() * 0.33);
+        painter -> drawLine(angleLine1);
+        painter -> drawLine(angleLine2);
+    }
 }
 
 void PhysGraphicsScene::setLineColor(const QColor &color) {

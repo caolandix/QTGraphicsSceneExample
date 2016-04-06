@@ -13,6 +13,7 @@ class QGraphicsLineItem;
 class QFont;
 class QGraphicsTextItem;
 class QColor;
+class QPainter;
 
 class PhysGraphicsScene : public QGraphicsScene {
     Q_OBJECT
@@ -43,6 +44,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+    void drawBackground(QPainter *, const QRectF &) Q_DECL_OVERRIDE;
 
 private:
     bool isItemChange(int type);

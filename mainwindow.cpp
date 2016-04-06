@@ -8,14 +8,13 @@
 
 const int InsertTextButton = 10;
 
-MainWindow::MainWindow()
-{
+MainWindow::MainWindow() {
     createActions();
     createToolBox();
     createMenus();
 
     scene = new PhysGraphicsScene(itemMenu, this);
-    scene ->setSceneRect(QRectF(-2000, -2000, 2000, 2000));
+    scene ->setSceneRect(QRectF(0, 0, 640, 480));
     connect(scene, SIGNAL(itemInserted(DiagramItem *)), this, SLOT(itemInserted(DiagramItem *)));
     connect(scene, SIGNAL(textInserted(QGraphicsTextItem *)), this, SLOT(textInserted(QGraphicsTextItem *)));
     connect(scene, SIGNAL(itemSelected(QGraphicsItem *)), this, SLOT(itemSelected(QGraphicsItem *)));
@@ -24,9 +23,6 @@ MainWindow::MainWindow()
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(toolBox);
     view = new QGraphicsView(scene);
-    QTransform trfrm;
-    trfrm.scale(1.0, -1.0);
-    view ->setTransform(trfrm);
     layout->addWidget(view);
 
     QWidget *widget = new QWidget;
@@ -136,6 +132,8 @@ void MainWindow::textInserted(QGraphicsTextItem *) {
     buttonGroup ->button(InsertTextButton) ->setChecked(false);
     scene ->setMode(PhysGraphicsScene::Mode(pointerTypeGroup ->checkedId()));
 }
+
+
 
 void MainWindow::currentFontChanged(const QFont &) {
     handleFontChange();
