@@ -116,13 +116,13 @@ void PhysGraphicsScene::setItemType(DiagramItem::DiagramType type) {
 }
 
 void PhysGraphicsScene::editorLostFocus(DiagramTextItem *item) {
-    QTextCursor cursor = item->textCursor();
+    QTextCursor cursor = item ->textCursor();
     cursor.clearSelection();
-    item->setTextCursor(cursor);
+    item ->setTextCursor(cursor);
 
-    if (item->toPlainText().isEmpty()) {
+    if (item ->toPlainText().isEmpty()) {
         removeItem(item);
-        item->deleteLater();
+        item ->deleteLater();
     }
 }
 
