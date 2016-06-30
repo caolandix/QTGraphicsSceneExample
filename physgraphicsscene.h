@@ -18,13 +18,13 @@ class QPainter;
 class PhysGraphicsScene : public QGraphicsScene {
     Q_OBJECT
 public:
-    enum Mode { InsertItem, InsertLine, InsertText, MoveItem };
+    enum Mode { InsertItem, InsertLine, InsertText, MoveItem, RotateItem };
 
-    explicit PhysGraphicsScene(QMenu *itemMenu, QObject *parent = 0);
-    QFont font() const { return myFont; }
-    QColor textColor() const { return myTextColor; }
-    QColor itemColor() const { return myItemColor; }
-    QColor lineColor() const { return myLineColor; }
+    explicit PhysGraphicsScene(QMenu *itemMenu, QObject *parent = NULL);
+    QFont font() const { return m_Font; }
+    QColor textColor() const { return m_TextColor; }
+    QColor itemColor() const { return m_ItemColor; }
+    QColor lineColor() const { return m_LineColor; }
     void setLineColor(const QColor &color);
     void setTextColor(const QColor &color);
     void setItemColor(const QColor &color);
@@ -33,12 +33,12 @@ public:
 public slots:
     void setMode(Mode mode);
     void setItemType(DiagramItem::DiagramType type);
-    void editorLostFocus(DiagramTextItem *item);
+    void editorLostFocus(DiagramTextItem *);
 
 signals:
-    void itemInserted(DiagramItem *item);
-    void textInserted(QGraphicsTextItem *item);
-    void itemSelected(QGraphicsItem *item);
+    void itemInserted(DiagramItem *);
+    void textInserted(QGraphicsTextItem *);
+    void itemSelected(QGraphicsItem *);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
@@ -48,18 +48,19 @@ protected:
 
 private:
     bool isItemChange(int type);
+    void setupAngleLine(QLineF &, const QPointF, const QPointF, const double);
 
-    DiagramItem::DiagramType myItemType;
-    QMenu *myItemMenu;
-    Mode myMode;
+    DiagramItem::DiagramType m_ItemType;
+    QMenu *m_pItemMenu;
+    Mode m_Mode;
     bool leftButtonDown;
     QPointF startPoint;
-    QGraphicsLineItem *line;
-    QFont myFont;
-    DiagramTextItem *textItem;
-    QColor myTextColor;
-    QColor myItemColor;
-    QColor myLineColor;
+    QGraphicsLineItem *m_pLine;
+    QFont m_Font;
+    DiagramTextItem *m_pTextItem;
+    QColor m_TextColor;
+    QColor m_ItemColor;
+    QColor m_LineColor;
 };
 
 #endif // PHYSGRAPHICSSCENE_H
