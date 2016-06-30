@@ -49,6 +49,11 @@ protected:
 private:
     bool isItemChange(int type);
     void setupAngleLine(QLineF &, const QPointF, const QPointF, const double);
+    void drawAngledPlane(QPainter *);
+    void drawThetaPhi(QPainter *);
+    QPointF findLineMidPoint(const QLineF );
+
+
 
     DiagramItem::DiagramType m_ItemType;
     QMenu *m_pItemMenu;

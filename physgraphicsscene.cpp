@@ -55,7 +55,49 @@ void PhysGraphicsScene::drawBackground(QPainter *painter, const QRectF &rect) {
     painter -> drawLine(y_axis);  // Y-Axis
     painter -> drawLine(angleLine1);
     painter -> drawLine(angleLine2);
+
+    if (m_Mode == InsertLine && m_pLine) {
+        drawAngledPlane(painter);
+        drawThetaPhi(painter);
+    }
+
 }
+
+QPointF PhysGraphicsScene::findLineMidPoint(const QLineF line) {
+    QPointF mid((line.p1().x() + line.p2().x()) / 2, (line.p1().y() + line.p2().y()) / 2);
+
+    return mid;
+}
+
+void PhysGraphicsScene::drawAngledPlane(QPainter *painter) {
+    QPointF lineMidPoint = findLineMidPoint(m_pLine ->line());
+    QRectF lineRect(m_pLine ->line().p1(), m_pLine ->line().p2());
+
+    // Draw the temporary cartesian axis' origin'ed at p1 of the line
+    QPen pen(Qt::lightGray);
+    pen.setStyle(Qt::DashDotDotLine);
+    pen.setWidth(2);
+    painter ->setPen(pen);
+    QLineF xAxis, yAxis;
+    xAxis.setAngle(90);
+    xAxis.setP1(m_pLine ->line().p1()); xAxis.setP2(QPointF(m_pLine ->line().dx(), 0));
+    xAxis.setLength(m_pLine ->line().dx());
+
+    yAxis.setAngle(0);
+    yAxis.setLength(m_pLine ->line().dy());
+
+    painter -> drawLine(xAxis);   // x-axis
+    painter -> drawLine(yAxis);   // y-axis
+
+
+    // Draw the arc from the false cartesian axis to the line
+    double angle = m_pLine ->line().angle();
+}
+
+void PhysGraphicsScene::drawThetaPhi(QPainter *painter) {
+
+}
+
 
 void PhysGraphicsScene::setupAngleLine(QLineF &line, const QPointF p1, const QPointF p2, const double angle) {
     line.setP1(p1);
