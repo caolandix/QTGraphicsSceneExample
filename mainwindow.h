@@ -20,10 +20,8 @@ class QToolButton;
 class QAbstractButton;
 class QGraphicsView;
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
-
 public:
    MainWindow();
 
@@ -54,24 +52,27 @@ private:
     void createActions();
     void createMenus();
     void createToolbars();
-    QWidget *createBackgroundCellWidget(const QString &text,
-                                        const QString &image);
-    QWidget *createCellWidget(const QString &text,
-                              DiagramItem::DiagramType type);
+    QWidget *createBackgroundCellWidget(const QString &text, const QString &image);
+    QWidget *createCellWidget(const QString &text, DiagramItem::DiagramType type);
     QMenu *createColorMenu(const char *slot, QColor defaultColor);
     QIcon createColorToolButtonIcon(const QString &image, QColor color);
     QIcon createColorIcon(QColor color);
 
-    PhysGraphicsScene *scene;
-    QGraphicsView *view;
+    PhysGraphicsScene *m_pScene;
+    QGraphicsView *m_pView;
 
     QAction *exitAction;
     QAction *addAction;
     QAction *deleteAction;
-
     QAction *toFrontAction;
     QAction *sendBackAction;
     QAction *aboutAction;
+    QAction *boldAction;
+    QAction *underlineAction;
+    QAction *italicAction;
+    QAction *textAction;
+    QAction *fillAction;
+    QAction *lineAction;
 
     QMenu *fileMenu;
     QMenu *itemMenu;
@@ -95,12 +96,6 @@ private:
     QToolButton *fontColorToolButton;
     QToolButton *fillColorToolButton;
     QToolButton *lineColorToolButton;
-    QAction *boldAction;
-    QAction *underlineAction;
-    QAction *italicAction;
-    QAction *textAction;
-    QAction *fillAction;
-    QAction *lineAction;
 };
 
 #endif // MAINWINDOW_H

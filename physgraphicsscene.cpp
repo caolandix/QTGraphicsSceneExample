@@ -60,6 +60,7 @@ void PhysGraphicsScene::drawBackground(QPainter *painter, const QRectF &rect) {
         drawAngledPlane(painter);
         drawThetaPhi(painter);
     }
+    update();
 
 }
 
@@ -80,7 +81,7 @@ void PhysGraphicsScene::drawAngledPlane(QPainter *painter) {
     painter ->setPen(pen);
     QLineF xAxis, yAxis;
     xAxis.setAngle(90);
-    xAxis.setP1(m_pLine ->line().p1()); xAxis.setP2(QPointF(m_pLine ->line().dx(), 0));
+    xAxis.setP1(QPointF(m_pLine ->line().dx(), 0)); xAxis.setP2(m_pLine ->line().p1());
     xAxis.setLength(m_pLine ->line().dx());
 
     yAxis.setAngle(0);
