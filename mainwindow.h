@@ -19,13 +19,43 @@ class QFont;
 class QToolButton;
 class QAbstractButton;
 class QGraphicsView;
+class DiagramTextItem;
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
    MainWindow();
+
+   enum Mode { InsertItem, InsertLine, InsertText, MoveItem };
+
+   QFont font() const { return myFont; }
+   QColor textColor() const { return myTextColor; }
+   QColor itemColor() const { return myItemColor; }
+   QColor lineColor() const { return myLineColor; }
+   void setLineColor(const QColor &color);
+   void setTextColor(const QColor &color);
+   void setItemColor(const QColor &color);
+   void setFont(const QFont &font);
+private:
+   bool isItemChange(int type);
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+    void drawBackground(QPainter *, const QRectF &) Q_DECL_OVERRIDE;
+
+
+public slots:
+    void setMode(Mode mode);
+    void setItemType(DiagramItem::DiagramType type);
+    void editorLostFocus(DiagramTextItem *item);
+
+signals:
+    void itemInserted(DiagramItem *item);
+    void textInserted(QGraphicsTextItem *item);
+    void itemSelected(QGraphicsItem *item);
+
 
 private slots:
     void backgroundButtonGroupClicked(QAbstractButton *button);
@@ -34,8 +64,8 @@ private slots:
     void pointerGroupClicked(int id);
     void bringToFront();
     void sendToBack();
-    void itemInserted(DiagramItem *item);
-    void textInserted(QGraphicsTextItem *item);
+    void onItemInserted(DiagramItem *item);
+    void onTextInserted(QGraphicsTextItem *item);
     void currentFontChanged(const QFont &font);
     void fontSizeChanged(const QString &size);
     void sceneScaleChanged(const QString &scale);
@@ -46,7 +76,7 @@ private slots:
     void fillButtonTriggered();
     void lineButtonTriggered();
     void handleFontChange();
-    void itemSelected(QGraphicsItem *item);
+    void onItemSelected(QGraphicsItem *item);
     void about();
 
 private:
@@ -62,7 +92,8 @@ private:
     QIcon createColorToolButtonIcon(const QString &image, QColor color);
     QIcon createColorIcon(QColor color);
 
-    PhysGraphicsScene *scene;
+    // PhysGraphicsScene *scene;
+    QGraphicsScene *scene;
     QGraphicsView *view;
 
     QAction *exitAction;
@@ -101,6 +132,20 @@ private:
     QAction *textAction;
     QAction *fillAction;
     QAction *lineAction;
+
+
+    DiagramItem::DiagramType myItemType;
+    QMenu *myItemMenu;
+    Mode myMode;
+    bool leftButtonDown;
+    QPointF startPoint;
+    QGraphicsLineItem *line;
+    QFont myFont;
+    DiagramTextItem *textItem;
+    QColor myTextColor;
+    QColor myItemColor;
+    QColor myLineColor;
+
 };
 
 #endif // MAINWINDOW_H
