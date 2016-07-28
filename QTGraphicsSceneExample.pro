@@ -17,13 +17,15 @@ SOURCES += main.cpp\
     physgraphicsscene.cpp \
     arrow.cpp \
     diagramitem.cpp \
-    diagramtextitem.cpp
+    diagramtextitem.cpp \
+    physgraphicsview.cpp
 
 HEADERS  += mainwindow.h \
     physgraphicsscene.h \
     arrow.h \
     diagramitem.h \
-    diagramtextitem.h
+    diagramtextitem.h \
+    physgraphicsview.h
 
 FORMS    += mainwindow.ui
 

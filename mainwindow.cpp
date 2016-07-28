@@ -13,21 +13,14 @@ MainWindow::MainWindow() {
     createToolBox();
     createMenus();
 
-    // scene = new PhysGraphicsScene(itemMenu, this);
     scene = new QGraphicsScene(this);
     scene ->setSceneRect(QRectF(0, 0, 640, 480));
-
-    /*
-    connect(scene, SIGNAL(itemInserted(DiagramItem *)), this, SLOT(itemInserted(DiagramItem *)));
-    connect(scene, SIGNAL(textInserted(QGraphicsTextItem *)), this, SLOT(textInserted(QGraphicsTextItem *)));
-    connect(scene, SIGNAL(itemSelected(QGraphicsItem *)), this, SLOT(itemSelected(QGraphicsItem *)));
-    */
     createToolbars();
 
-    view = new QGraphicsView(scene);
-    connect(this, SIGNAL(itemInserted(DiagramItem *)), this, SLOT(onItemInserted(DiagramItem *)));
-    connect(this, SIGNAL(textInserted(QGraphicsTextItem *)), this, SLOT(onTextInserted(QGraphicsTextItem *)));
-    connect(this, SIGNAL(itemSelected(QGraphicsItem *)), this, SLOT(onItemSelected(QGraphicsItem *)));
+    view = new PhysGraphicsView(itemMenu, scene, this);
+    connect(view, SIGNAL(itemInserted(DiagramItem *)), this, SLOT(onItemInserted(DiagramItem *)));
+    connect(view, SIGNAL(textInserted(QGraphicsTextItem *)), this, SLOT(onTextInserted(QGraphicsTextItem *)));
+    connect(view, SIGNAL(itemSelected(QGraphicsItem *)), this, SLOT(onItemSelected(QGraphicsItem *)));
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(toolBox);
@@ -563,94 +556,4 @@ QIcon MainWindow::createColorIcon(QColor color) {
     painter.fillRect(QRect(0, 0, 20, 20), color);
 
     return QIcon(pixmap);
-}
-
-
-void MainWindow::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
-    if (mouseEvent ->button() != Qt::LeftButton)
-        return;
-
-    DiagramItem *item = NULL;
-    switch (myMode) {
-        case InsertItem:
-            item = new DiagramItem(myItemType, myItemMenu);
-            item ->setBrush(myItemColor);
-            scene ->addItem(item);
-            item ->setPos(mouseEvent->scenePos());
-            emit itemInserted(item);
-            break;
-        case InsertLine:
-            startPoint = mouseEvent ->scenePos();
-            line = new QGraphicsLineItem(QLineF(mouseEvent ->scenePos(), mouseEvent ->scenePos()));
-            line ->setPen(QPen(myLineColor, 2));
-            scene ->addItem(line);
-            break;
-        case InsertText:
-            textItem = new DiagramTextItem();
-            textItem ->setFont(myFont);
-            textItem ->setTextInteractionFlags(Qt::TextEditorInteraction);
-            textItem ->setZValue(1000.0);
-            connect(textItem, SIGNAL(lostFocus(DiagramTextItem*)),
-                    this, SLOT(editorLostFocus(DiagramTextItem*)));
-            connect(textItem, SIGNAL(selectedChange(QGraphicsItem*)),
-                    this, SIGNAL(itemSelected(QGraphicsItem*)));
-            scene ->addItem(textItem);
-            textItem ->setDefaultTextColor(myTextColor);
-            textItem ->setPos(mouseEvent->scenePos());
-            emit textInserted(textItem);
-    default:
-        ;
-    }
-    MainWindow::mousePressEvent(mouseEvent);
-}
-
-void MainWindow::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) {
-    if (myMode == InsertLine && line != 0) {
-        QLineF newLine(line ->line().p1(), mouseEvent->scenePos());
-        line ->setLine(newLine);
-    }
-    else if (myMode == MoveItem) {
-        MainWindow::mouseMoveEvent(mouseEvent);
-    }
-}
-
-void MainWindow::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) {
-    QPointF endPoint = mouseEvent ->scenePos();
-
-    if (line != 0 && myMode == InsertLine) {
-        QList<QGraphicsItem *> startItems = scene ->items(line ->line().p1());
-        if (startItems.count() && startItems.first() == line)
-            startItems.removeFirst();
-        QList<QGraphicsItem *> endItems = scene ->items(line ->line().p2());
-        if (endItems.count() && endItems.first() == line)
-            endItems.removeFirst();
-
-        scene ->removeItem(line);
-        delete line;
-
-        if (startItems.count() > 0 && endItems.count() > 0 &&
-            startItems.first() ->type() == DiagramItem::Type && endItems.first() ->type() == DiagramItem::Type &&
-            startItems.first() != endItems.first()) {
-
-            DiagramItem *startItem = qgraphicsitem_cast<DiagramItem *>(startItems.first());
-            DiagramItem *endItem = qgraphicsitem_cast<DiagramItem *>(endItems.first());
-            Arrow *arrow = new Arrow(startItem, endItem);
-            arrow ->setColor(myLineColor);
-            startItem ->addArrow(arrow);
-            endItem ->addArrow(arrow);
-            arrow ->setZValue(-1000.0);
-            scene ->addItem(arrow);
-            arrow ->updatePosition();
-        }
-        else {
-            Arrow *arrow = new Arrow(startPoint, endPoint);
-            arrow ->setColor(myLineColor);
-            arrow ->setZValue(-1000.0);
-            scene ->addItem(arrow);
-            arrow ->updatePosition();
-
-        }
-    }
-    line = 0;
-    MainWindow::mouseReleaseEvent(mouseEvent);
 }

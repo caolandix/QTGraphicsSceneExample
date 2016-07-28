@@ -1,11 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtWidgets>
+
 #include "diagramitem.h"
-
-#include <QMainWindow>
-
-class PhysGraphicsScene;
+#include "physgraphicsview.h"
 
 class QAction;
 class QToolBox;
@@ -39,23 +38,11 @@ public:
    void setFont(const QFont &font);
 private:
    bool isItemChange(int type);
-protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
-    void drawBackground(QPainter *, const QRectF &) Q_DECL_OVERRIDE;
-
 
 public slots:
     void setMode(Mode mode);
     void setItemType(DiagramItem::DiagramType type);
     void editorLostFocus(DiagramTextItem *item);
-
-signals:
-    void itemInserted(DiagramItem *item);
-    void textInserted(QGraphicsTextItem *item);
-    void itemSelected(QGraphicsItem *item);
-
 
 private slots:
     void backgroundButtonGroupClicked(QAbstractButton *button);
@@ -84,17 +71,13 @@ private:
     void createActions();
     void createMenus();
     void createToolbars();
-    QWidget *createBackgroundCellWidget(const QString &text,
-                                        const QString &image);
-    QWidget *createCellWidget(const QString &text,
-                              DiagramItem::DiagramType type);
+    QWidget *createBackgroundCellWidget(const QString &text, const QString &image);
+    QWidget *createCellWidget(const QString &text, DiagramItem::DiagramType type);
     QMenu *createColorMenu(const char *slot, QColor defaultColor);
     QIcon createColorToolButtonIcon(const QString &image, QColor color);
     QIcon createColorIcon(QColor color);
 
-    // PhysGraphicsScene *scene;
-    QGraphicsScene *scene;
-    QGraphicsView *view;
+    PhysGraphicsView *view;
 
     QAction *exitAction;
     QAction *addAction;
