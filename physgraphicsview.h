@@ -4,6 +4,7 @@
 #include <QtWidgets>
 
 #include "diagramitem.h"
+#include "diagramtextitem.h"
 
 
 class PhysGraphicsView : public QGraphicsView {
@@ -12,9 +13,22 @@ public:
     enum Mode { InsertItem, InsertLine, InsertText, MoveItem };
 
     PhysGraphicsView(QMenu *, QGraphicsScene *, QWidget * = NULL);
+
+    QFont font() const { return myFont; }
+    QColor textColor() const { return myTextColor; }
+    QColor itemColor() const { return myItemColor; }
+    QColor lineColor() const { return myLineColor; }
+    void setLineColor(const QColor &color);
+    void setTextColor(const QColor &color);
+    void setItemColor(const QColor &color);
+    void setFont(const QFont &font);
 private:
     void init(QMenu *);
 
+public slots:
+    void setMode(Mode mode);
+    void setItemType(DiagramItem::DiagramType type);
+    void editorLostFocus(DiagramTextItem *item);
 
 signals:
     void itemInserted(DiagramItem *item);
@@ -29,9 +43,10 @@ protected:
     void drawBackground(QPainter *, const QRectF &) Q_DECL_OVERRIDE;
 
 private:
+    bool isItemChange(int type);
+
     QGraphicsScene *m_pScene;
     DiagramItem::DiagramType myItemType;
-    QMenu *myItemMenu;
     Mode myMode;
     bool leftButtonDown;
     QPointF startPoint;
@@ -41,7 +56,7 @@ private:
     QColor myTextColor;
     QColor myItemColor;
     QColor myLineColor;
-
+    QMenu *myItemMenu;
 };
 
 #endif // PHYSGRAPHICSVIEW_H

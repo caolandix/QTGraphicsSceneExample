@@ -25,24 +25,10 @@ class MainWindow : public QMainWindow {
 
 public:
    MainWindow();
-
-   enum Mode { InsertItem, InsertLine, InsertText, MoveItem };
-
-   QFont font() const { return myFont; }
-   QColor textColor() const { return myTextColor; }
-   QColor itemColor() const { return myItemColor; }
-   QColor lineColor() const { return myLineColor; }
-   void setLineColor(const QColor &color);
-   void setTextColor(const QColor &color);
-   void setItemColor(const QColor &color);
    void setFont(const QFont &font);
+
 private:
    bool isItemChange(int type);
-
-public slots:
-    void setMode(Mode mode);
-    void setItemType(DiagramItem::DiagramType type);
-    void editorLostFocus(DiagramTextItem *item);
 
 private slots:
     void backgroundButtonGroupClicked(QAbstractButton *button);
@@ -78,6 +64,7 @@ private:
     QIcon createColorIcon(QColor color);
 
     PhysGraphicsView *view;
+    QGraphicsScene *scene;
 
     QAction *exitAction;
     QAction *addAction;
@@ -115,20 +102,6 @@ private:
     QAction *textAction;
     QAction *fillAction;
     QAction *lineAction;
-
-
-    DiagramItem::DiagramType myItemType;
-    QMenu *myItemMenu;
-    Mode myMode;
-    bool leftButtonDown;
-    QPointF startPoint;
-    QGraphicsLineItem *line;
-    QFont myFont;
-    DiagramTextItem *textItem;
-    QColor myTextColor;
-    QColor myItemColor;
-    QColor myLineColor;
-
 };
 
 #endif // MAINWINDOW_H

@@ -43,16 +43,16 @@ void MainWindow::backgroundButtonGroupClicked(QAbstractButton *button)
     }
     QString text = button->text();
     if (text == tr("Blue Grid"))
-        scene->setBackgroundBrush(QPixmap("images/background1.png"));
+        scene ->setBackgroundBrush(QPixmap("images/background1.png"));
     else if (text == tr("White Grid"))
-        scene->setBackgroundBrush(QPixmap("images/background2.png"));
+        scene ->setBackgroundBrush(QPixmap("images/background2.png"));
     else if (text == tr("Gray Grid"))
-        scene->setBackgroundBrush(QPixmap("images/background3.png"));
+        scene ->setBackgroundBrush(QPixmap("images/background3.png"));
     else
-        scene->setBackgroundBrush(QPixmap("images/background4.png"));
+        scene ->setBackgroundBrush(QPixmap("images/background4.png"));
 
-    scene->update();
-    view->update();
+    scene ->update();
+    view ->update();
 }
 
 void MainWindow::buttonGroupClicked(int id) {
@@ -62,17 +62,17 @@ void MainWindow::buttonGroupClicked(int id) {
             button ->setChecked(false);
     }
     if (id == InsertTextButton) {
-        setMode(InsertText);
+        view ->setMode(PhysGraphicsView::InsertText);
     }
     else {
-        setItemType(DiagramItem::DiagramType(id));
-        setMode(InsertItem);
+        view ->setItemType(DiagramItem::DiagramType(id));
+        view ->setMode(PhysGraphicsView::InsertItem);
     }
 }
 
 void MainWindow::deleteItem() {
     foreach (QGraphicsItem *item, scene ->selectedItems()) {
-        if (item->type() == Arrow::Type) {
+        if (item ->type() == Arrow::Type) {
             scene ->removeItem(item);
             Arrow *arrow = qgraphicsitem_cast<Arrow *>(item);
             arrow ->startItem() ->removeArrow(arrow);
@@ -90,11 +90,11 @@ void MainWindow::deleteItem() {
 }
 
 void MainWindow::pointerGroupClicked(int) {
-    setMode(Mode(pointerTypeGroup->checkedId()));
+    view ->setMode(PhysGraphicsView::Mode(pointerTypeGroup->checkedId()));
 }
 
 void MainWindow::bringToFront() {
-    if (scene->selectedItems().isEmpty())
+    if (scene ->selectedItems().isEmpty())
         return;
 
     QGraphicsItem *selectedItem = scene ->selectedItems().first();
@@ -124,14 +124,14 @@ void MainWindow::sendToBack() {
 }
 
 void MainWindow::onItemInserted(DiagramItem *item) {
-    pointerTypeGroup ->button(int(MoveItem)) ->setChecked(true);
-    setMode(Mode(pointerTypeGroup ->checkedId()));
+    pointerTypeGroup ->button(int(PhysGraphicsView::MoveItem)) ->setChecked(true);
+    view ->setMode(PhysGraphicsView::Mode(pointerTypeGroup ->checkedId()));
     buttonGroup ->button(int(item ->diagramType())) ->setChecked(false);
 }
 
 void MainWindow::onTextInserted(QGraphicsTextItem *) {
     buttonGroup ->button(InsertTextButton) ->setChecked(false);
-    setMode(Mode(pointerTypeGroup ->checkedId()));
+    view ->setMode(PhysGraphicsView::Mode(pointerTypeGroup ->checkedId()));
 }
 
 
@@ -154,25 +154,19 @@ void MainWindow::sceneScaleChanged(const QString &scale) {
 
 void MainWindow::textColorChanged() {
     textAction = qobject_cast<QAction *>(sender());
-    fontColorToolButton->setIcon(createColorToolButtonIcon(
-                                     "images/textpointer.png",
-                                     qvariant_cast<QColor>(textAction->data())));
+    fontColorToolButton->setIcon(createColorToolButtonIcon("images/textpointer.png", qvariant_cast<QColor>(textAction->data())));
     textButtonTriggered();
 }
 
 void MainWindow::itemColorChanged() {
     fillAction = qobject_cast<QAction *>(sender());
-    fillColorToolButton->setIcon(createColorToolButtonIcon(
-                                     "images/floodfill.png",
-                                     qvariant_cast<QColor>(fillAction->data())));
+    fillColorToolButton->setIcon(createColorToolButtonIcon("images/floodfill.png", qvariant_cast<QColor>(fillAction->data())));
     fillButtonTriggered();
 }
 
 void MainWindow::lineColorChanged() {
     lineAction = qobject_cast<QAction *>(sender());
-    lineColorToolButton->setIcon(createColorToolButtonIcon(
-                                     "images/linecolor.png",
-                                     qvariant_cast<QColor>(lineAction->data())));
+    lineColorToolButton->setIcon(createColorToolButtonIcon("images/linecolor.png", qvariant_cast<QColor>(lineAction->data())));
     lineButtonTriggered();
 }
 
@@ -184,71 +178,17 @@ bool MainWindow::isItemChange(int type) {
     return false;
 }
 
-void MainWindow::setFont(const QFont &font) {
-    myFont = font;
-
-    if (isItemChange(DiagramTextItem::Type)) {
-        QGraphicsTextItem *item = qgraphicsitem_cast<DiagramTextItem *>(scene ->selectedItems().first());
-        //At this point the selection can change so the first selected item might not be a DiagramTextItem
-        if (item)
-            item->setFont(myFont);
-    }
-}
-
-void MainWindow::setMode(Mode mode) {
-    myMode = mode;
-}
-
-void MainWindow::setItemType(DiagramItem::DiagramType type) {
-    myItemType = type;
-}
-
-void MainWindow::setLineColor(const QColor &color) {
-    myLineColor = color;
-    if (isItemChange(Arrow::Type)) {
-        Arrow *item = qgraphicsitem_cast<Arrow *>(scene -> selectedItems().first());
-        item->setColor(myLineColor);
-        update();
-    }
-}
-
-void MainWindow::setTextColor(const QColor &color) {
-    myTextColor = color;
-    if (isItemChange(DiagramTextItem::Type)) {
-        DiagramTextItem *item = qgraphicsitem_cast<DiagramTextItem *>(scene -> selectedItems().first());
-        item->setDefaultTextColor(myTextColor);
-    }
-}
-
-void MainWindow::setItemColor(const QColor &color) {
-    myItemColor = color;
-    if (isItemChange(DiagramItem::Type)) {
-        DiagramItem *item = qgraphicsitem_cast<DiagramItem *>(scene -> selectedItems().first());
-        item->setBrush(myItemColor);
-    }
-}
-
-void MainWindow::editorLostFocus(DiagramTextItem *item) {
-    QTextCursor cursor = item ->textCursor();
-    cursor.clearSelection();
-    item->setTextCursor(cursor);
-
-    if (item->toPlainText().isEmpty()) {
-        scene ->removeItem(item);
-        item->deleteLater();
-    }
-}
 
 void MainWindow::textButtonTriggered() {
-    setTextColor(qvariant_cast<QColor>(textAction->data()));
+    view ->setTextColor(qvariant_cast<QColor>(textAction->data()));
 }
 
 void MainWindow::fillButtonTriggered() {
-    setItemColor(qvariant_cast<QColor>(fillAction->data()));
+    view ->setItemColor(qvariant_cast<QColor>(fillAction->data()));
 }
 
 void MainWindow::lineButtonTriggered() {
-    setLineColor(qvariant_cast<QColor>(lineAction->data()));
+    view ->setLineColor(qvariant_cast<QColor>(lineAction->data()));
 }
 
 void MainWindow::handleFontChange() {
@@ -457,8 +397,8 @@ void MainWindow::createToolbars() {
     linePointerButton->setIcon(QIcon("images/linepointer.png"));
 
     pointerTypeGroup = new QButtonGroup(this);
-    pointerTypeGroup->addButton(pointerButton, int(MoveItem));
-    pointerTypeGroup->addButton(linePointerButton, int(InsertLine));
+    pointerTypeGroup->addButton(pointerButton, int(PhysGraphicsView::MoveItem));
+    pointerTypeGroup->addButton(linePointerButton, int(PhysGraphicsView::InsertLine));
     connect(pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(pointerGroupClicked(int)));
 
