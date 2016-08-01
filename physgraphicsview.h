@@ -10,7 +10,7 @@
 class PhysGraphicsView : public QGraphicsView {
     Q_OBJECT
 public:
-    enum Mode { InsertItem, InsertLine, InsertText, MoveItem };
+    enum Mode { InsertItem, InsertLine, InsertText, MoveItem, InsertParticle };
 
     PhysGraphicsView(QMenu *, QGraphicsScene *, QWidget * = NULL);
 

@@ -394,13 +394,16 @@ void MainWindow::createToolbars() {
     pointerButton->setIcon(QIcon("images/pointer.png"));
     QToolButton *linePointerButton = new QToolButton;
     linePointerButton->setCheckable(true);
-    linePointerButton->setIcon(QIcon("images/linepointer.png"));
+    linePointerButton->setIcon(QIcon("images/vector.png"));
+    QToolButton *particleButton = new QToolButton;
+    linePointerButton->setCheckable(true);
+    linePointerButton->setIcon(QIcon("images/particle.png"));
 
     pointerTypeGroup = new QButtonGroup(this);
     pointerTypeGroup->addButton(pointerButton, int(PhysGraphicsView::MoveItem));
     pointerTypeGroup->addButton(linePointerButton, int(PhysGraphicsView::InsertLine));
-    connect(pointerTypeGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(pointerGroupClicked(int)));
+    pointerTypeGroup->addButton(particleButton, int(PhysGraphicsView::InsertParticle));
+    connect(pointerTypeGroup, SIGNAL(buttonClicked(int)), this, SLOT(pointerGroupClicked(int)));
 
     sceneScaleCombo = new QComboBox;
     QStringList scales;

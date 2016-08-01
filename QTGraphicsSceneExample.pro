@@ -44,4 +44,6 @@ DISTFILES += \
     images/pointer.png \
     images/sendtoback.png \
     images/textpointer.png \
-    images/underline.png
+    images/underline.png \
+    images/vector.png \
+    images/particle.png
