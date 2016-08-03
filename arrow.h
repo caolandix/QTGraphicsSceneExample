@@ -20,9 +20,9 @@ public:
     Arrow(QPointF, QPointF, QGraphicsItem * = NULL, QGraphicsScene * = NULL);
     int type() const { return Type; }
     QRectF boundingRect() const;
-    void setColor(const QColor &color) { myColor = color; }
-    DiagramItem *startItem() const { return myStartItem; }
-    DiagramItem *endItem() const { return myEndItem; }
+    void setColor(const QColor &color) { m_Color = color; }
+    DiagramItem *startItem() const { return m_pStartItem; }
+    DiagramItem *endItem() const { return m_pEndItem; }
 
 public slots:
     void updatePosition();

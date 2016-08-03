@@ -5,20 +5,20 @@
 
 const qreal Pi = 3.14;
 
-Arrow::Arrow(DiagramItem *startItem, DiagramItem *endItem, QGraphicsItem *parent, QGraphicsScene *scene) : QGraphicsLineItem(parent) {
-    myStartItem = startItem;
-    myEndItem = endItem;
+Arrow::Arrow(DiagramItem *pStartItem, DiagramItem *pEndItem, QGraphicsItem *pParent, QGraphicsScene *pScene) : QGraphicsLineItem(pParent) {
+    m_pStartItem = pStartItem;
+    m_pEndItem = pEndItem;
     setFlag(QGraphicsItem::ItemIsSelectable, true);
-    myColor = Qt::black;
-    setPen(QPen(myColor, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    m_Color = Qt::black;
+    setPen(QPen(m_Color, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 }
 
-Arrow::Arrow(QPointF startPoint, QPointF endPoint, QGraphicsItem *parent, QGraphicsScene *scene) : QGraphicsLineItem(parent) {
-    myStartItem = myEndItem = NULL;
+Arrow::Arrow(QPointF startPoint, QPointF endPoint, QGraphicsItem *pParent, QGraphicsScene *pScene) : QGraphicsLineItem(pParent) {
+    m_pStartItem = m_pEndItem = NULL;
     m_startPos = startPoint, m_endPos = endPoint;
     setFlag(QGraphicsItem::ItemIsSelectable, true);
-    myColor = Qt::black;
-    setPen(QPen(myColor, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    m_Color = Qt::black;
+    setPen(QPen(m_Color, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 }
 
 
@@ -28,8 +28,8 @@ QRectF Arrow::boundingRect() const {
 }
 
 void Arrow::updatePosition() {
-    if (myStartItem && myEndItem) {
-        QLineF line(mapFromItem(myStartItem, 0, 0), mapFromItem(myEndItem, 0, 0));
+    if (m_pStartItem && m_pEndItem) {
+        QLineF line(mapFromItem(m_pStartItem, 0, 0), mapFromItem(m_pEndItem, 0, 0));
         setLine(line);
     }
 
@@ -38,29 +38,29 @@ void Arrow::updatePosition() {
 void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
 
     QPen myPen = pen();
-    myPen.setColor(myColor);
+    myPen.setColor(m_Color);
     painter ->setPen(myPen);
-    painter ->setBrush(myColor);
+    painter ->setBrush(m_Color);
     QPointF startPos, endPos;
 
-    if (myStartItem && myEndItem) {
-        if (myStartItem ->collidesWithItem(myEndItem))
+    if (m_pStartItem && m_pEndItem) {
+        if (m_pStartItem ->collidesWithItem(m_pEndItem))
             return;
-        QLineF centerLine(myStartItem ->pos(), myEndItem ->pos());
-        QPolygonF endPolygon = myEndItem ->polygon();
-        QPointF p1 = endPolygon.first() + myEndItem ->pos();
+        QLineF centerLine(m_pStartItem ->pos(), m_pEndItem ->pos());
+        QPolygonF endPolygon = m_pEndItem ->polygon();
+        QPointF p1 = endPolygon.first() + m_pEndItem ->pos();
         QPointF p2;
         QPointF intersectPoint;
         QLineF polyLine;
         for (int i = 1; i < endPolygon.count(); ++i) {
-            p2 = endPolygon.at(i) + myEndItem ->pos();
+            p2 = endPolygon.at(i) + m_pEndItem ->pos();
             polyLine = QLineF(p1, p2);
             QLineF::IntersectType intersectType = polyLine.intersect(centerLine, &intersectPoint);
             if (intersectType == QLineF::BoundedIntersection)
                 break;
             p1 = p2;
         }
-        startPos = myStartItem ->pos();
+        startPos = m_pStartItem ->pos();
         endPos = intersectPoint;
     }
     else {

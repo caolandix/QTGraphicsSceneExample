@@ -50,12 +50,14 @@ private:
     Mode myMode;
     bool leftButtonDown;
     QPointF startPoint;
-    QGraphicsLineItem *line;
+    QGraphicsLineItem *m_pLine;
+    QGraphicsPolygonItem *m_pPolyItem;
     QFont myFont;
     DiagramTextItem *textItem;
     QColor myTextColor;
     QColor myItemColor;
     QColor myLineColor;
+    QColor m_particleColor;
     QMenu *myItemMenu;
 };
 
