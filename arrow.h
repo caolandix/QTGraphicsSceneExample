@@ -3,6 +3,7 @@
 
 #include <QGraphicsLineItem>
 
+#include "physbaseitem.h"
 #include "diagramitem.h"
 
 class QGraphicsPolygonItem;
@@ -12,28 +13,30 @@ class QRectF;
 class QGraphicsSceneMouseEvent;
 class QPainterPath;
 
-class Arrow : public QGraphicsLineItem {
-public:
-    enum { Type = UserType + 4 };
+#include "physbaseitem.h"
 
-    Arrow(DiagramItem *startItem, DiagramItem *endItem, QGraphicsItem *parent = NULL, QGraphicsScene *scene = NULL);
-    Arrow(QPointF startPoint, QPointF endPoint, QGraphicsItem *parent = NULL, QGraphicsScene *scene = NULL);
+class Arrow : public QGraphicsLineItem, PhysBaseItem {
+public:
+    enum { Type = PhysBaseItem::ParticleType };
+
+    Arrow(DiagramItem *, DiagramItem *, QGraphicsItem * = NULL, QGraphicsScene * = NULL);
+    Arrow(QPointF, QPointF, QGraphicsItem * = NULL, QGraphicsScene * = NULL);
     int type() const { return Type; }
     QRectF boundingRect() const;
-    void setColor(const QColor &color) { myColor = color; }
-    DiagramItem *startItem() const { return myStartItem; }
-    DiagramItem *endItem() const { return myEndItem; }
+    void setColor(const QColor &color) { m_Color = color; }
+    DiagramItem *startItem() const { return m_pStartItem; }
+    DiagramItem *endItem() const { return m_pEndItem; }
 
 public slots:
     void updatePosition();
 
 protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = NULL);
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget * = NULL);
 
 private:
-    DiagramItem *myStartItem;
-    DiagramItem *myEndItem;
-    QColor myColor;
+    DiagramItem *m_pStartItem;
+    DiagramItem *m_pEndItem;
+    QColor m_Color;
     QPointF m_startPos, m_endPos;
 };
 #endif // ARROW_H

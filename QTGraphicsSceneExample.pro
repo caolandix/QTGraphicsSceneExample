@@ -14,16 +14,20 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    physgraphicsscene.cpp \
     arrow.cpp \
     diagramitem.cpp \
-    diagramtextitem.cpp
+    diagramtextitem.cpp \
+    physgraphicsview.cpp \
+    physparticle.cpp \
+    physbaseitem.cpp
 
 HEADERS  += mainwindow.h \
-    physgraphicsscene.h \
     arrow.h \
     diagramitem.h \
-    diagramtextitem.h
+    diagramtextitem.h \
+    physgraphicsview.h \
+    physparticle.h \
+    physbaseitem.h
 
 FORMS    += mainwindow.ui
 
@@ -42,4 +46,6 @@ DISTFILES += \
     images/pointer.png \
     images/sendtoback.png \
     images/textpointer.png \
-    images/underline.png
+    images/underline.png \
+    images/vector.png \
+    images/particle.png
