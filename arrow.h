@@ -3,6 +3,7 @@
 
 #include <QGraphicsLineItem>
 
+#include "physbaseitem.h"
 #include "diagramitem.h"
 
 class QGraphicsPolygonItem;
@@ -12,9 +13,11 @@ class QRectF;
 class QGraphicsSceneMouseEvent;
 class QPainterPath;
 
-class Arrow : public QGraphicsLineItem {
+#include "physbaseitem.h"
+
+class Arrow : public QGraphicsLineItem, PhysBaseItem {
 public:
-    enum { Type = UserType + 4 };
+    enum { Type = PhysBaseItem::ParticleType };
 
     Arrow(DiagramItem *, DiagramItem *, QGraphicsItem * = NULL, QGraphicsScene * = NULL);
     Arrow(QPointF, QPointF, QGraphicsItem * = NULL, QGraphicsScene * = NULL);

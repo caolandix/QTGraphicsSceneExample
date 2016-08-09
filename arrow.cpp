@@ -1,11 +1,11 @@
 #include <QtWidgets>
 #include <math.h>
 
+#include "physbaseitem.h"
 #include "arrow.h"
 
-const qreal Pi = 3.14;
-
-Arrow::Arrow(DiagramItem *pStartItem, DiagramItem *pEndItem, QGraphicsItem *pParent, QGraphicsScene *pScene) : QGraphicsLineItem(pParent) {
+Arrow::Arrow(DiagramItem *pStartItem, DiagramItem *pEndItem, QGraphicsItem *pParent, QGraphicsScene *pScene) :
+    QGraphicsLineItem(pParent), PhysBaseItem() {
     m_pStartItem = pStartItem;
     m_pEndItem = pEndItem;
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -13,7 +13,8 @@ Arrow::Arrow(DiagramItem *pStartItem, DiagramItem *pEndItem, QGraphicsItem *pPar
     setPen(QPen(m_Color, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 }
 
-Arrow::Arrow(QPointF startPoint, QPointF endPoint, QGraphicsItem *pParent, QGraphicsScene *pScene) : QGraphicsLineItem(pParent) {
+Arrow::Arrow(QPointF startPoint, QPointF endPoint, QGraphicsItem *pParent, QGraphicsScene *pScene) :
+    QGraphicsLineItem(pParent), PhysBaseItem() {
     m_pStartItem = m_pEndItem = NULL;
     m_startPos = startPoint, m_endPos = endPoint;
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -36,7 +37,6 @@ void Arrow::updatePosition() {
 }
 
 void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
-
     QPen myPen = pen();
     myPen.setColor(m_Color);
     painter ->setPen(myPen);
@@ -71,7 +71,7 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     double angle = ::acos(line().dx() / line().length());
 
     if (line().dy() >= 0)
-        angle = (Pi * 2) - angle;
+        angle = (M_PI * 2) - angle;
 
     QPointF pt1 = line().p1();
     QPointF pt2 = line().p2();
@@ -86,8 +86,8 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     else if (arrowLen < 5.0)
         arrowLen = 5.0;
 
-    QPointF arrow1P1 = line().p1() + QPointF(sin(angle + Pi / 3) * arrowLen, cos(angle + Pi / 3) * arrowLen);
-    QPointF arrow2P1 = line().p1() + QPointF(sin(angle + Pi - Pi / 3) * arrowLen, cos(angle + Pi - Pi / 3) * arrowLen);
+    QPointF arrow1P1 = line().p1() + QPointF(sin(angle + M_PI / 3) * arrowLen, cos(angle + M_PI / 3) * arrowLen);
+    QPointF arrow2P1 = line().p1() + QPointF(sin(angle + M_PI - M_PI / 3) * arrowLen, cos(angle + M_PI - M_PI / 3) * arrowLen);
     angleLine1.setP1(arrow1P1);
     angleLine2.setP1(arrow2P1);
     angleLine1.setLength(arrowLen);
@@ -100,7 +100,7 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
         QLineF myLine = line();
         myLine.translate(0, 4.0);
         painter ->drawLine(myLine);
-        myLine.translate(0,-8.0);
+        myLine.translate(0, -8.0);
         painter ->drawLine(myLine);
     }
 }

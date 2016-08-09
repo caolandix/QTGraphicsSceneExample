@@ -14,18 +14,20 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    physgraphicsscene.cpp \
     arrow.cpp \
     diagramitem.cpp \
     diagramtextitem.cpp \
-    physgraphicsview.cpp
+    physgraphicsview.cpp \
+    physparticle.cpp \
+    physbaseitem.cpp
 
 HEADERS  += mainwindow.h \
-    physgraphicsscene.h \
     arrow.h \
     diagramitem.h \
     diagramtextitem.h \
-    physgraphicsview.h
+    physgraphicsview.h \
+    physparticle.h \
+    physbaseitem.h
 
 FORMS    += mainwindow.ui
 

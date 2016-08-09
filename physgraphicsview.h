@@ -14,14 +14,16 @@ public:
 
     PhysGraphicsView(QMenu *, QGraphicsScene *, QWidget * = NULL);
 
-    QFont font() const { return myFont; }
+    QFont font() const { return m_Font; }
     QColor textColor() const { return myTextColor; }
     QColor itemColor() const { return myItemColor; }
-    QColor lineColor() const { return myLineColor; }
-    void setLineColor(const QColor &color);
-    void setTextColor(const QColor &color);
-    void setItemColor(const QColor &color);
-    void setFont(const QFont &font);
+    QColor lineColor() const { return m_LineColor; }
+    QColor particleColor() const { return m_particleColor; }
+    void setLineColor(const QColor &);
+    void setTextColor(const QColor &);
+    void setItemColor(const QColor &);
+    void setParticleColor(const QColor &);
+    void setFont(const QFont &);
 private:
     void init(QMenu *);
 
@@ -45,18 +47,18 @@ protected:
 private:
     bool isItemChange(int type);
 
+    bool leftButtonDown;
     QGraphicsScene *m_pScene;
     DiagramItem::DiagramType myItemType;
-    Mode myMode;
-    bool leftButtonDown;
-    QPointF startPoint;
+    Mode m_Mode;
+    QPointF m_pStartPoint;
     QGraphicsLineItem *m_pLine;
     QGraphicsPolygonItem *m_pPolyItem;
-    QFont myFont;
+    QFont m_Font;
     DiagramTextItem *textItem;
     QColor myTextColor;
     QColor myItemColor;
-    QColor myLineColor;
+    QColor m_LineColor;
     QColor m_particleColor;
     QMenu *myItemMenu;
 };

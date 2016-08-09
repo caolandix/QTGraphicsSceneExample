@@ -374,18 +374,24 @@ void MainWindow::createToolbars() {
     colorToolBar ->addWidget(fillColorToolButton);
     colorToolBar ->addWidget(lineColorToolButton);
 
+    // Pointer Type toolbar
+    pointerToolbar = addToolBar(tr("Pointer type"));
+
     QToolButton *pointerButton = new QToolButton;
     pointerButton ->setCheckable(true);
     pointerButton ->setChecked(true);
     pointerButton ->setIcon(QIcon("images/pointer.png"));
+    pointerToolbar ->addWidget(pointerButton);
 
     QToolButton *linePointerButton = new QToolButton;
     linePointerButton ->setCheckable(true);
     linePointerButton ->setIcon(QIcon("images/vector.png"));
+    pointerToolbar ->addWidget(linePointerButton);
 
     QToolButton *particleButton = new QToolButton;
-    linePointerButton ->setCheckable(true);
-    linePointerButton ->setIcon(QIcon("images/particle.png"));
+    particleButton ->setCheckable(true);
+    particleButton ->setIcon(QIcon("images/particle.png"));
+    pointerToolbar ->addWidget(particleButton);
 
     pointerTypeGroup = new QButtonGroup(this);
     pointerTypeGroup ->addButton(pointerButton, int(PhysGraphicsView::MoveItem));
@@ -400,9 +406,6 @@ void MainWindow::createToolbars() {
     sceneScaleCombo ->setCurrentIndex(2);
     connect(sceneScaleCombo, SIGNAL(currentIndexChanged(QString)), this, SLOT(sceneScaleChanged(QString)));
 
-    pointerToolbar = addToolBar(tr("Pointer type"));
-    pointerToolbar ->addWidget(pointerButton);
-    pointerToolbar ->addWidget(linePointerButton);
     pointerToolbar ->addWidget(sceneScaleCombo);
 }
 

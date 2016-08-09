@@ -1,6 +1,7 @@
 #include <QtWidgets>
 #include "physgraphicsview.h"
 #include "arrow.h"
+#include "physparticle.h"
 
 PhysGraphicsView::PhysGraphicsView(QMenu *pMenu, QGraphicsScene *pScene, QWidget *pParent) : QGraphicsView(pScene, pParent) {
     init(pMenu);
@@ -9,13 +10,13 @@ PhysGraphicsView::PhysGraphicsView(QMenu *pMenu, QGraphicsScene *pScene, QWidget
 void PhysGraphicsView::init(QMenu *pMenu) {
     m_pScene = scene();
     myItemMenu = pMenu;
-    myMode = MoveItem;
+    m_Mode = MoveItem;
     myItemType = DiagramItem::Step;
     m_pLine = NULL;
     textItem = NULL;
     myItemColor = Qt::white;
     myTextColor = Qt::black;
-    myLineColor = Qt::black;
+    m_LineColor = Qt::black;
     m_particleColor = Qt::darkGreen;
 }
 
@@ -28,10 +29,10 @@ bool PhysGraphicsView::isItemChange(int type) {
 }
 
 void PhysGraphicsView::setLineColor(const QColor &color) {
-    myLineColor = color;
+    m_LineColor = color;
     if (isItemChange(Arrow::Type)) {
         Arrow *item = qgraphicsitem_cast<Arrow *>(m_pScene -> selectedItems().first());
-        item ->setColor(myLineColor);
+        item ->setColor(m_LineColor);
         update();
     }
 }
@@ -45,7 +46,7 @@ void PhysGraphicsView::setTextColor(const QColor &color) {
 }
 
 void PhysGraphicsView::setMode(Mode mode) {
-    myMode = mode;
+    m_Mode = mode;
 }
 
 void PhysGraphicsView::setItemType(DiagramItem::DiagramType type) {
@@ -61,25 +62,25 @@ void PhysGraphicsView::setItemColor(const QColor &color) {
 }
 
 void PhysGraphicsView::setFont(const QFont &font) {
-    myFont = font;
+    m_Font = font;
 
     if (isItemChange(DiagramTextItem::Type)) {
         QGraphicsTextItem *item = qgraphicsitem_cast<DiagramTextItem *>(m_pScene ->selectedItems().first());
         //At this point the selection can change so the first selected item might not be a DiagramTextItem
         if (item)
-            item ->setFont(myFont);
+            item ->setFont(m_Font);
     }
 }
 
 
-void PhysGraphicsView::editorLostFocus(DiagramTextItem *item) {
-    QTextCursor cursor = item ->textCursor();
+void PhysGraphicsView::editorLostFocus(DiagramTextItem *pItem) {
+    QTextCursor cursor = pItem ->textCursor();
     cursor.clearSelection();
-    item ->setTextCursor(cursor);
+    pItem ->setTextCursor(cursor);
 
-    if (item ->toPlainText().isEmpty()) {
-        m_pScene ->removeItem(item);
-        item ->deleteLater();
+    if (pItem ->toPlainText().isEmpty()) {
+        m_pScene ->removeItem(pItem);
+        pItem ->deleteLater();
     }
 }
 
@@ -89,7 +90,7 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
     QPointF scenePos = mapToScene(mouseEvent ->pos());
     DiagramItem *item = NULL;
 
-    switch (myMode) {
+    switch (m_Mode) {
         case InsertItem:
             item = new DiagramItem(myItemType, myItemMenu);
             item ->setBrush(myItemColor);
@@ -98,21 +99,21 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
             emit itemInserted(item);
             break;
         case InsertLine:
-            startPoint = scenePos;
+            m_pStartPoint = scenePos;
             m_pLine = new QGraphicsLineItem(QLineF(scenePos, scenePos));
-            m_pLine ->setPen(QPen(myLineColor, 2));
+            m_pLine ->setPen(QPen(m_LineColor, 2));
             m_pScene ->addItem(m_pLine);
             break;
         case InsertParticle:
-            startPoint = scenePos;
-            m_pPolyItem = new QGraphicsPolygonItem(QPolygonF(QVector<QPointF>() << QPointF(10, 10) << QPointF(0, 90) << QPointF(40, 70) << QPointF(80, 110) << QPointF(70, 20)));
+            m_pStartPoint = scenePos;
+            m_pPolyItem = new QGraphicsPolygonItem(QPolygonF(QVector<QPointF>() << QPointF(0, 0)));
             m_pPolyItem ->setPen(QPen(m_particleColor));
-            m_pPolyItem ->setBrush(Qt::yellow);
+            m_pPolyItem ->setBrush(m_particleColor);
             m_pScene ->addItem(m_pPolyItem);
             break;
         case InsertText:
             textItem = new DiagramTextItem();
-            textItem ->setFont(myFont);
+            textItem ->setFont(m_Font);
             textItem ->setTextInteractionFlags(Qt::TextEditorInteraction);
             textItem ->setZValue(1000.0);
             connect(textItem, SIGNAL(lostFocus(DiagramTextItem*)), this, SLOT(editorLostFocus(DiagramTextItem*)));
@@ -129,11 +130,11 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
 void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
     QPointF scenePos = mapToScene(mouseEvent ->pos());
 
-    if (myMode == InsertLine && m_pLine) {
+    if (m_Mode == InsertLine && m_pLine) {
         QLineF newLine(m_pLine ->line().p1(), scenePos);
         m_pLine ->setLine(newLine);
     }
-    else if (myMode == MoveItem) {
+    else if (m_Mode == MoveItem) {
         PhysGraphicsView::mouseMoveEvent(mouseEvent);
     }
 }
@@ -141,7 +142,7 @@ void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
 void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
     QPointF endPoint = mapToScene(mouseEvent ->pos());
 
-    if (m_pLine != NULL && myMode == InsertLine) {
+    if (m_pLine != NULL && m_Mode == InsertLine) {
         QList<QGraphicsItem *> startItems = m_pScene ->items(m_pLine ->line().p1());
         if (startItems.count() && startItems.first() == m_pLine)
             startItems.removeFirst();
@@ -159,7 +160,7 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
             DiagramItem *startItem = qgraphicsitem_cast<DiagramItem *>(startItems.first());
             DiagramItem *endItem = qgraphicsitem_cast<DiagramItem *>(endItems.first());
             Arrow *arrow = new Arrow(startItem, endItem);
-            arrow ->setColor(myLineColor);
+            arrow ->setColor(m_LineColor);
             startItem ->addArrow(arrow);
             endItem ->addArrow(arrow);
             arrow ->setZValue(-1000.0);
@@ -167,16 +168,19 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
             arrow ->updatePosition();
         }
         else {
-            Arrow *pArrow = new Arrow(startPoint, endPoint);
-            pArrow ->setColor(myLineColor);
+            Arrow *pArrow = new Arrow(m_pStartPoint, endPoint);
+            pArrow ->setColor(m_LineColor);
             pArrow ->setZValue(-1000.0);
             m_pScene ->addItem(pArrow);
             pArrow ->updatePosition();
-
         }
         m_pLine = NULL;
     }
-    else if (m_pPolyItem && myMode == InsertParticle) {
+    else if (m_pPolyItem && m_Mode == InsertParticle) {
+        PhysParticle *pParticle = new PhysParticle(m_pStartPoint);
+        pParticle ->setColor(m_particleColor);
+        pParticle ->setZValue(-1000.0);
+        m_pScene ->addItem(pParticle);
         m_pPolyItem = NULL;
     }
 }
