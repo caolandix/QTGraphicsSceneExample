@@ -1,11 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtWidgets>
+
 #include "diagramitem.h"
-
-#include <QMainWindow>
-
-class PhysGraphicsScene;
+#include "physgraphicsview.h"
 
 class QAction;
 class QToolBox;
@@ -19,11 +18,17 @@ class QFont;
 class QToolButton;
 class QAbstractButton;
 class QGraphicsView;
+class DiagramTextItem;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
+
 public:
    MainWindow();
+   void setFont(const QFont &font);
+
+private:
+   bool isItemChange(int type);
 
 private slots:
     void backgroundButtonGroupClicked(QAbstractButton *button);
@@ -32,8 +37,8 @@ private slots:
     void pointerGroupClicked(int id);
     void bringToFront();
     void sendToBack();
-    void itemInserted(DiagramItem *item);
-    void textInserted(QGraphicsTextItem *item);
+    void onItemInserted(DiagramItem *item);
+    void onTextInserted(QGraphicsTextItem *item);
     void currentFontChanged(const QFont &font);
     void fontSizeChanged(const QString &size);
     void sceneScaleChanged(const QString &scale);
@@ -44,7 +49,7 @@ private slots:
     void fillButtonTriggered();
     void lineButtonTriggered();
     void handleFontChange();
-    void itemSelected(QGraphicsItem *item);
+    void onItemSelected(QGraphicsItem *item);
     void about();
 
 private:
@@ -58,21 +63,16 @@ private:
     QIcon createColorToolButtonIcon(const QString &image, QColor color);
     QIcon createColorIcon(QColor color);
 
-    PhysGraphicsScene *m_pScene;
-    QGraphicsView *m_pView;
+    PhysGraphicsView *view;
+    QGraphicsScene *scene;
 
     QAction *exitAction;
     QAction *addAction;
     QAction *deleteAction;
+
     QAction *toFrontAction;
     QAction *sendBackAction;
     QAction *aboutAction;
-    QAction *boldAction;
-    QAction *underlineAction;
-    QAction *italicAction;
-    QAction *textAction;
-    QAction *fillAction;
-    QAction *lineAction;
 
     QMenu *fileMenu;
     QMenu *itemMenu;
@@ -96,6 +96,12 @@ private:
     QToolButton *fontColorToolButton;
     QToolButton *fillColorToolButton;
     QToolButton *lineColorToolButton;
+    QAction *boldAction;
+    QAction *underlineAction;
+    QAction *italicAction;
+    QAction *textAction;
+    QAction *fillAction;
+    QAction *lineAction;
 };
 
 #endif // MAINWINDOW_H

@@ -125,6 +125,7 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
     default:
         ;
     }
+    QGraphicsView::mousePressEvent(mouseEvent);
 }
 
 void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
@@ -135,7 +136,7 @@ void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
         m_pLine ->setLine(newLine);
     }
     else if (m_Mode == MoveItem) {
-        PhysGraphicsView::mouseMoveEvent(mouseEvent);
+        QGraphicsView::mouseMoveEvent(mouseEvent);
     }
 }
 
@@ -183,6 +184,7 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
         m_pScene ->addItem(pParticle);
         m_pPolyItem = NULL;
     }
+    QGraphicsView::mouseReleaseEvent(mouseEvent);
 }
 
 void PhysGraphicsView::drawBackground(QPainter *painter, const QRectF &rect) {
