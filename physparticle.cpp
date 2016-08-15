@@ -18,6 +18,7 @@ PhysParticle::~PhysParticle() {
 
 void PhysParticle::init() {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
     m_Color = Qt::black;
 
 }
@@ -52,4 +53,32 @@ void PhysParticle::paint(QPainter *pPainter, const QStyleOptionGraphicsItem *pOp
     pPainter -> setBrush(gradient);
     pPainter -> setPen(QPen(Qt::black, 0));
     pPainter -> drawEllipse(-10, -10, 20, 20);
+}
+
+void PhysParticle::removeArrow(Arrow *pArrow)  {
+    int index = m_lstArrows.indexOf(pArrow);
+
+    if (index != -1)
+        m_lstArrows.removeAt(index);
+}
+
+void PhysParticle::removeArrows() {
+    foreach (Arrow *pArrow, m_lstArrows) {
+        pArrow ->startItem() ->removeArrow(pArrow);
+        pArrow ->endItem() ->removeArrow(pArrow);
+        scene() ->removeItem(pArrow);
+        delete pArrow;
+    }
+}
+
+ void PhysParticle::addArrow(Arrow *pArrow) {
+     m_lstArrows.append(pArrow);
+ }
+
+QVariant PhysParticle::itemChange(GraphicsItemChange change, const QVariant &value) {
+    if (change == QGraphicsItem::ItemPositionChange) {
+        foreach (Arrow *pArrow, m_lstArrows)
+            pArrow ->updatePosition();
+    }
+    return value;
 }

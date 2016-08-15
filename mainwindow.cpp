@@ -70,21 +70,21 @@ void MainWindow::buttonGroupClicked(int id) {
 }
 
 void MainWindow::deleteItem() {
-    foreach (QGraphicsItem *item, scene ->selectedItems()) {
-        if (item ->type() == Arrow::Type) {
-            scene ->removeItem(item);
-            Arrow *arrow = qgraphicsitem_cast<Arrow *>(item);
-            arrow ->startItem() ->removeArrow(arrow);
-            arrow ->endItem() ->removeArrow(arrow);
-            delete item;
+    foreach (QGraphicsItem *pItem, scene ->selectedItems()) {
+        if (pItem ->type() == Arrow::Type) {
+            scene ->removeItem(pItem);
+            Arrow *pArrow = qgraphicsitem_cast<Arrow *>(pItem);
+            pArrow ->startItem() ->removeArrow(pArrow);
+            pArrow ->endItem() ->removeArrow(pArrow);
+            delete pItem;
         }
     }
 
-    foreach (QGraphicsItem *item, scene ->selectedItems()) {
-         if (item ->type() == DiagramItem::Type)
-             qgraphicsitem_cast<DiagramItem *>(item) ->removeArrows();
-         scene ->removeItem(item);
-         delete item;
+    foreach (QGraphicsItem *pItem, scene ->selectedItems()) {
+         if (pItem ->type() == DiagramItem::Type)
+             qgraphicsitem_cast<DiagramItem *>(pItem) ->removeArrows();
+         scene ->removeItem(pItem);
+         delete pItem;
      }
 }
 
@@ -96,15 +96,15 @@ void MainWindow::bringToFront() {
     if (scene ->selectedItems().isEmpty())
         return;
 
-    QGraphicsItem *selectedItem = scene ->selectedItems().first();
-    QList<QGraphicsItem *> overlapItems = selectedItem ->collidingItems();
+    QGraphicsItem *pSelectedItem = scene ->selectedItems().first();
+    QList<QGraphicsItem *> overlapItems = pSelectedItem ->collidingItems();
 
     qreal zValue = 0;
-    foreach (QGraphicsItem *item, overlapItems) {
-        if (item ->zValue() >= zValue && item ->type() == DiagramItem::Type)
-            zValue = item ->zValue() + 0.1;
+    foreach (QGraphicsItem *pItem, overlapItems) {
+        if (pItem ->zValue() >= zValue && pItem ->type() == DiagramItem::Type)
+            zValue = pItem ->zValue() + 0.1;
     }
-    selectedItem ->setZValue(zValue);
+    pSelectedItem ->setZValue(zValue);
 }
 
 void MainWindow::sendToBack() {

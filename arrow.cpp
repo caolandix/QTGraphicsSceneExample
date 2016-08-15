@@ -2,22 +2,25 @@
 #include <math.h>
 
 #include "physbaseitem.h"
+#include "physparticle.h"
 #include "arrow.h"
 
-Arrow::Arrow(DiagramItem *pStartItem, DiagramItem *pEndItem, QGraphicsItem *pParent, QGraphicsScene *pScene) :
+Arrow::Arrow(PhysParticle *pStartItem, PhysParticle *pEndItem, QGraphicsItem *pParent, QGraphicsScene *pScene) :
     QGraphicsLineItem(pParent), PhysBaseItem() {
-    m_pStartItem = pStartItem;
-    m_pEndItem = pEndItem;
-    setFlag(QGraphicsItem::ItemIsSelectable, true);
-    m_Color = Qt::black;
-    setPen(QPen(m_Color, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    init(pStartItem, pEndItem);
 }
 
 Arrow::Arrow(QPointF startPoint, QPointF endPoint, QGraphicsItem *pParent, QGraphicsScene *pScene) :
     QGraphicsLineItem(pParent), PhysBaseItem() {
-    m_pStartItem = m_pEndItem = NULL;
+    init();
     m_startPos = startPoint, m_endPos = endPoint;
+}
+
+void Arrow::init(PhysParticle *pStartItem, PhysParticle *pEndItem) {
+    m_pStartItem = pStartItem;
+    m_pEndItem = pEndItem;
     setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
     m_Color = Qt::black;
     setPen(QPen(m_Color, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 }
