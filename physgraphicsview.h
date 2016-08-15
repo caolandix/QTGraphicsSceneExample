@@ -15,8 +15,8 @@ public:
     PhysGraphicsView(QMenu *, QGraphicsScene *, QWidget * = NULL);
 
     QFont font() const { return m_Font; }
-    QColor textColor() const { return myTextColor; }
-    QColor itemColor() const { return myItemColor; }
+    QColor textColor() const { return m_TextColor; }
+    QColor itemColor() const { return m_ItemColor; }
     QColor lineColor() const { return m_LineColor; }
     QColor particleColor() const { return m_particleColor; }
     void setLineColor(const QColor &);
@@ -56,8 +56,8 @@ private:
     QGraphicsPolygonItem *m_pPolyItem;
     QFont m_Font;
     DiagramTextItem *textItem;
-    QColor myTextColor;
-    QColor myItemColor;
+    QColor m_TextColor;
+    QColor m_ItemColor;
     QColor m_LineColor;
     QColor m_particleColor;
     QMenu *myItemMenu;

@@ -14,15 +14,15 @@ void PhysGraphicsView::init(QMenu *pMenu) {
     myItemType = DiagramItem::Step;
     m_pLine = NULL;
     textItem = NULL;
-    myItemColor = Qt::white;
-    myTextColor = Qt::black;
-    m_LineColor = Qt::black;
+    m_ItemColor = Qt::white;
+    m_TextColor = Qt::black;
+    m_LineColor = Qt::darkRed;
     m_particleColor = Qt::darkGreen;
 }
 
 bool PhysGraphicsView::isItemChange(int type) {
-    foreach (QGraphicsItem *item, m_pScene -> selectedItems()) {
-        if (item ->type() == type)
+    foreach (QGraphicsItem *pItem, m_pScene -> selectedItems()) {
+        if (pItem ->type() == type)
             return true;
     }
     return false;
@@ -38,10 +38,10 @@ void PhysGraphicsView::setLineColor(const QColor &color) {
 }
 
 void PhysGraphicsView::setTextColor(const QColor &color) {
-    myTextColor = color;
+    m_TextColor = color;
     if (isItemChange(DiagramTextItem::Type)) {
-        DiagramTextItem *item = qgraphicsitem_cast<DiagramTextItem *>(m_pScene ->selectedItems().first());
-        item ->setDefaultTextColor(myTextColor);
+        DiagramTextItem *pItem = qgraphicsitem_cast<DiagramTextItem *>(m_pScene ->selectedItems().first());
+        pItem ->setDefaultTextColor(m_TextColor);
     }
 }
 
@@ -54,10 +54,10 @@ void PhysGraphicsView::setItemType(DiagramItem::DiagramType type) {
 }
 
 void PhysGraphicsView::setItemColor(const QColor &color) {
-    myItemColor = color;
+    m_ItemColor = color;
     if (isItemChange(DiagramItem::Type)) {
-        DiagramItem *item = qgraphicsitem_cast<DiagramItem *>(m_pScene -> selectedItems().first());
-        item->setBrush(myItemColor);
+        DiagramItem *pItem = qgraphicsitem_cast<DiagramItem *>(m_pScene -> selectedItems().first());
+        pItem ->setBrush(m_ItemColor);
     }
 }
 
@@ -65,10 +65,10 @@ void PhysGraphicsView::setFont(const QFont &font) {
     m_Font = font;
 
     if (isItemChange(DiagramTextItem::Type)) {
-        QGraphicsTextItem *item = qgraphicsitem_cast<DiagramTextItem *>(m_pScene ->selectedItems().first());
+        QGraphicsTextItem *pItem = qgraphicsitem_cast<DiagramTextItem *>(m_pScene ->selectedItems().first());
         //At this point the selection can change so the first selected item might not be a DiagramTextItem
-        if (item)
-            item ->setFont(m_Font);
+        if (pItem)
+            pItem ->setFont(m_Font);
     }
 }
 
@@ -88,15 +88,15 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
     if (mouseEvent ->button() != Qt::LeftButton)
         return;
     QPointF scenePos = mapToScene(mouseEvent ->pos());
-    DiagramItem *item = NULL;
+    DiagramItem *pItem = NULL;
 
     switch (m_Mode) {
         case InsertItem:
-            item = new DiagramItem(myItemType, myItemMenu);
-            item ->setBrush(myItemColor);
-            m_pScene ->addItem(item);
-            item ->setPos(scenePos);
-            emit itemInserted(item);
+            pItem = new DiagramItem(myItemType, myItemMenu);
+            pItem ->setBrush(m_ItemColor);
+            m_pScene ->addItem(pItem);
+            pItem ->setPos(scenePos);
+            emit itemInserted(pItem);
             break;
         case InsertLine:
             m_pStartPoint = scenePos;
@@ -119,7 +119,7 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
             connect(textItem, SIGNAL(lostFocus(DiagramTextItem*)), this, SLOT(editorLostFocus(DiagramTextItem*)));
             connect(textItem, SIGNAL(selectedChange(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
             m_pScene ->addItem(textItem);
-            textItem ->setDefaultTextColor(myTextColor);
+            textItem ->setDefaultTextColor(m_TextColor);
             textItem ->setPos(scenePos);
             emit textInserted(textItem);
     default:
@@ -154,22 +154,23 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
         m_pScene ->removeItem(m_pLine);
         delete m_pLine;
 
+        Arrow *pArrow = NULL;
         if (startItems.count() > 0 && endItems.count() > 0 &&
             startItems.first() ->type() == DiagramItem::Type && endItems.first() ->type() == DiagramItem::Type &&
             startItems.first() != endItems.first()) {
 
-            DiagramItem *startItem = qgraphicsitem_cast<DiagramItem *>(startItems.first());
-            DiagramItem *endItem = qgraphicsitem_cast<DiagramItem *>(endItems.first());
-            Arrow *arrow = new Arrow(startItem, endItem);
-            arrow ->setColor(m_LineColor);
-            startItem ->addArrow(arrow);
-            endItem ->addArrow(arrow);
-            arrow ->setZValue(-1000.0);
-            m_pScene ->addItem(arrow);
-            arrow ->updatePosition();
+            DiagramItem *pStartItem = qgraphicsitem_cast<DiagramItem *>(startItems.first());
+            DiagramItem *pEndItem = qgraphicsitem_cast<DiagramItem *>(endItems.first());
+            pArrow = new Arrow(pStartItem, pEndItem);
+            pArrow ->setColor(m_LineColor);
+            pStartItem ->addArrow(pArrow);
+            pEndItem ->addArrow(pArrow);
+            pArrow ->setZValue(-1000.0);
+            m_pScene ->addItem(pArrow);
+            pArrow ->updatePosition();
         }
         else {
-            Arrow *pArrow = new Arrow(m_pStartPoint, endPoint);
+            pArrow = new Arrow(m_pStartPoint, endPoint);
             pArrow ->setColor(m_LineColor);
             pArrow ->setZValue(-1000.0);
             m_pScene ->addItem(pArrow);
