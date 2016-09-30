@@ -1,9 +1,11 @@
+#include <QtWidgets>
+
+#include "physparticle.h"
 #include "arrow.h"
 #include "diagramitem.h"
 #include "diagramtextitem.h"
 #include "mainwindow.h"
 
-#include <QtWidgets>
 
 const int InsertTextButton = 10;
 

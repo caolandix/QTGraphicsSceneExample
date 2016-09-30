@@ -14,7 +14,9 @@ class QGraphicsSceneMouseEvent;
 class QPainterPath;
 
 #include "physbaseitem.h"
-#include "physparticle.h"
+
+class PhysParticle;
+
 
 class Arrow : public QGraphicsLineItem, PhysBaseItem {
 public:

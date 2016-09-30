@@ -155,12 +155,14 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
         delete m_pLine;
 
         Arrow *pArrow = NULL;
+
+        // If there are items that the vector is being linked to && they are particles && they're not the same object then...
         if (startItems.count() > 0 && endItems.count() > 0 &&
-            startItems.first() ->type() == DiagramItem::Type && endItems.first() ->type() == DiagramItem::Type &&
+            startItems.first() ->type() == PhysParticle::ParticleType && endItems.first() ->type() == PhysParticle::ParticleType &&
             startItems.first() != endItems.first()) {
 
-            DiagramItem *pStartItem = qgraphicsitem_cast<DiagramItem *>(startItems.first());
-            DiagramItem *pEndItem = qgraphicsitem_cast<DiagramItem *>(endItems.first());
+            PhysParticle *pStartItem = qgraphicsitem_cast<PhysParticle *>(startItems.first());
+            PhysParticle *pEndItem = qgraphicsitem_cast<PhysParticle *>(endItems.first());
             pArrow = new Arrow(pStartItem, pEndItem);
             pArrow ->setColor(m_LineColor);
             pStartItem ->addArrow(pArrow);
@@ -169,6 +171,8 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
             m_pScene ->addItem(pArrow);
             pArrow ->updatePosition();
         }
+
+        // just add a new vector and draw it.
         else {
             pArrow = new Arrow(m_pStartPoint, endPoint);
             pArrow ->setColor(m_LineColor);

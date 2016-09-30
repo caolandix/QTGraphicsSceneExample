@@ -8,8 +8,9 @@
 
 class PhysParticle : public PhysBaseItem, public QGraphicsPolygonItem {
     Q_OBJECT
-    enum { Type = PhysBaseItem::ParticleType };
 public:
+    enum { Type = PhysBaseItem::ParticleType };
+
     PhysParticle(QGraphicsItem * = NULL, QGraphicsScene * = NULL);
     PhysParticle(QPointF, QGraphicsItem * = NULL, QGraphicsScene * = NULL);
     ~PhysParticle();
@@ -21,10 +22,10 @@ public:
     void removeArrow(Arrow *pArrow);
     void removeArrows();
     void addArrow(Arrow *pArrow);
+    QPointF pos() const { return m_currPos; }
 private:
     void init();
     int type() const { return Type; }
-    QPointF pos() const { return m_currPos; }
 
 protected:
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget * = NULL);

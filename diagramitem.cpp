@@ -2,8 +2,9 @@
 
 #include <QtWidgets>
 
- #include "diagramitem.h"
- #include "arrow.h"
+#include "diagramitem.h"
+#include "physparticle.h"
+#include "arrow.h"
 
 DiagramItem::DiagramItem(DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent, QGraphicsScene *scene) : QGraphicsPolygonItem(parent) {
     myDiagramType = diagramType;

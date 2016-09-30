@@ -2,8 +2,8 @@
 #include <math.h>
 
 #include "physbaseitem.h"
-#include "physparticle.h"
 #include "arrow.h"
+#include "physparticle.h"
 
 Arrow::Arrow(PhysParticle *pStartItem, PhysParticle *pEndItem, QGraphicsItem *pParent, QGraphicsScene *pScene) :
     QGraphicsLineItem(pParent), PhysBaseItem() {
