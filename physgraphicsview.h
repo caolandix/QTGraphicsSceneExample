@@ -5,6 +5,7 @@
 
 #include "diagramitem.h"
 #include "diagramtextitem.h"
+#include "physparticle.h"
 
 
 class PhysGraphicsView : public QGraphicsView {
@@ -26,6 +27,10 @@ public:
     void setFont(const QFont &);
 private:
     void init(QMenu *);
+
+    Arrow *createVector(QPointF &StartPt, QPointF &EndPt);
+    Arrow *createVector(PhysParticle *pStartItem, PhysParticle *pEndItem);
+
 
 public slots:
     void setMode(Mode mode);

@@ -76,8 +76,10 @@ void MainWindow::deleteItem() {
         if (pItem ->type() == Arrow::Type) {
             scene ->removeItem(pItem);
             Arrow *pArrow = qgraphicsitem_cast<Arrow *>(pItem);
-            pArrow ->startItem() ->removeArrow(pArrow);
-            pArrow ->endItem() ->removeArrow(pArrow);
+            if (pArrow ->startItem())
+                pArrow ->startItem() ->removeArrow(pArrow);
+            if (pArrow ->endItem())
+                pArrow ->endItem() ->removeArrow(pArrow);
             delete pItem;
         }
     }

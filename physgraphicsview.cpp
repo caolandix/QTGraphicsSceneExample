@@ -163,22 +163,18 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
 
             PhysParticle *pStartItem = qgraphicsitem_cast<PhysParticle *>(startItems.first());
             PhysParticle *pEndItem = qgraphicsitem_cast<PhysParticle *>(endItems.first());
-            pArrow = new Arrow(pStartItem, pEndItem);
-            pArrow ->setColor(m_LineColor);
-            pStartItem ->addArrow(pArrow);
-            pEndItem ->addArrow(pArrow);
-            pArrow ->setZValue(-1000.0);
-            m_pScene ->addItem(pArrow);
-            pArrow ->updatePosition();
+            pArrow = createVector(pStartItem, pEndItem);
+        }
+        else if (startItems.count() > 0 && endItems.count() == 0) {
+            if (startItems.first() ->type() == PhysParticle::ParticleType) {
+                PhysParticle *pStartItem = qgraphicsitem_cast<PhysParticle *>(startItems.first());
+                pArrow = createVector(pStartItem, pStartItem);
+            }
         }
 
         // just add a new vector and draw it.
         else {
-            pArrow = new Arrow(m_pStartPoint, endPoint);
-            pArrow ->setColor(m_LineColor);
-            pArrow ->setZValue(-1000.0);
-            m_pScene ->addItem(pArrow);
-            pArrow ->updatePosition();
+            pArrow = createVector(m_pStartPoint, endPoint);
         }
         m_pLine = NULL;
     }
@@ -190,6 +186,28 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
         m_pPolyItem = NULL;
     }
     QGraphicsView::mouseReleaseEvent(mouseEvent);
+}
+
+Arrow *PhysGraphicsView::createVector(QPointF &StartPt, QPointF &EndPt) {
+    Arrow *pArrow = new Arrow(StartPt, EndPt);
+    pArrow ->setColor(m_LineColor);
+    // pStartItem ->addArrow(pArrow);
+    // pEndItem ->addArrow(pArrow);
+    pArrow ->setZValue(-1000.0);
+    m_pScene ->addItem(pArrow);
+    pArrow ->updatePosition();
+    return pArrow;
+}
+
+Arrow *PhysGraphicsView::createVector(PhysParticle *pStartItem, PhysParticle *pEndItem) {
+    Arrow *pArrow = new Arrow(pStartItem, pEndItem);
+    pArrow ->setColor(m_LineColor);
+    pStartItem ->addArrow(pArrow);
+    pEndItem ->addArrow(pArrow);
+    pArrow ->setZValue(-1000.0);
+    m_pScene ->addItem(pArrow);
+    pArrow ->updatePosition();
+    return pArrow;
 }
 
 void PhysGraphicsView::drawBackground(QPainter *painter, const QRectF &rect) {
