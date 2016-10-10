@@ -29,7 +29,7 @@ private:
     void init(QMenu *);
 
     Arrow *createVector(QPointF &StartPt, QPointF &EndPt);
-    Arrow *createVector(PhysParticle *pStartItem, PhysParticle *pEndItem);
+    Arrow *createVector(PhysParticle *pStartItem, PhysParticle *pEndItem, QPointF StartPt, QPointF EndPt);
 
 
 public slots:

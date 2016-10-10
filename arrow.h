@@ -22,8 +22,9 @@ class Arrow : public QGraphicsLineItem, PhysBaseItem {
 public:
     enum { Type = PhysBaseItem::VectorType };
 
-    Arrow(PhysParticle *, PhysParticle *, QGraphicsItem * = NULL, QGraphicsScene * = NULL);
-    Arrow(QPointF, QPointF, QGraphicsItem * = NULL, QGraphicsScene * = NULL);
+    Arrow(PhysParticle *, PhysParticle *, QGraphicsItem * = NULL);
+    Arrow(QPointF, QPointF, QGraphicsItem * = NULL);
+    Arrow(PhysParticle *, PhysParticle *, QPointF, QPointF, QGraphicsItem * = NULL);
     int type() const { return Type; }
     QRectF boundingRect() const;
     void setColor(const QColor &color) { m_Color = color; }

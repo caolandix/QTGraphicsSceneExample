@@ -163,12 +163,12 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
 
             PhysParticle *pStartItem = qgraphicsitem_cast<PhysParticle *>(startItems.first());
             PhysParticle *pEndItem = qgraphicsitem_cast<PhysParticle *>(endItems.first());
-            pArrow = createVector(pStartItem, pEndItem);
+            pArrow = createVector(pStartItem, pEndItem, m_pStartPoint, endPoint);
         }
         else if (startItems.count() > 0 && endItems.count() == 0) {
             if (startItems.first() ->type() == PhysParticle::ParticleType) {
                 PhysParticle *pStartItem = qgraphicsitem_cast<PhysParticle *>(startItems.first());
-                pArrow = createVector(pStartItem, pStartItem);
+                pArrow = createVector(pStartItem, NULL, m_pStartPoint, endPoint);
             }
         }
 
@@ -199,11 +199,12 @@ Arrow *PhysGraphicsView::createVector(QPointF &StartPt, QPointF &EndPt) {
     return pArrow;
 }
 
-Arrow *PhysGraphicsView::createVector(PhysParticle *pStartItem, PhysParticle *pEndItem) {
-    Arrow *pArrow = new Arrow(pStartItem, pEndItem);
+Arrow *PhysGraphicsView::createVector(PhysParticle *pStartItem, PhysParticle *pEndItem, QPointF StartPt, QPointF EndPt) {
+    Arrow *pArrow = new Arrow(pStartItem, pEndItem, StartPt, EndPt);
     pArrow ->setColor(m_LineColor);
     pStartItem ->addArrow(pArrow);
-    pEndItem ->addArrow(pArrow);
+    if (pStartItem != pEndItem && pEndItem)
+        pEndItem ->addArrow(pArrow);
     pArrow ->setZValue(-1000.0);
     m_pScene ->addItem(pArrow);
     pArrow ->updatePosition();

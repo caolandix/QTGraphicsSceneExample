@@ -5,16 +5,23 @@
 #include "arrow.h"
 #include "physparticle.h"
 
-Arrow::Arrow(PhysParticle *pStartItem, PhysParticle *pEndItem, QGraphicsItem *pParent, QGraphicsScene *pScene) :
-    QGraphicsLineItem(pParent), PhysBaseItem() {
-    init(pStartItem, pEndItem);
-}
-
-Arrow::Arrow(QPointF startPoint, QPointF endPoint, QGraphicsItem *pParent, QGraphicsScene *pScene) :
+Arrow::Arrow(QPointF startPoint, QPointF endPoint, QGraphicsItem *pParent) :
     QGraphicsLineItem(pParent), PhysBaseItem() {
     init();
     m_startPos = startPoint, m_endPos = endPoint;
 }
+
+Arrow::Arrow(PhysParticle *pStartItem, PhysParticle *pEndItem, QGraphicsItem *pParent) :
+    QGraphicsLineItem(pParent), PhysBaseItem() {
+    init(pStartItem, pEndItem);
+}
+
+Arrow::Arrow(PhysParticle *pStartItem, PhysParticle *pEndItem, QPointF startPoint, QPointF endPoint, QGraphicsItem *pParent) :
+    QGraphicsLineItem(pParent), PhysBaseItem() {
+    init(pStartItem, pEndItem);
+    m_startPos = startPoint, m_endPos = endPoint;
+}
+
 
 void Arrow::init(PhysParticle *pStartItem, PhysParticle *pEndItem) {
     m_pStartItem = pStartItem;
