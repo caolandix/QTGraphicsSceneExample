@@ -27,9 +27,7 @@ public:
     void setFont(const QFont &);
 private:
     void init(QMenu *);
-
-    Arrow *createVector(QPointF &StartPt, QPointF &EndPt);
-    Arrow *createVector(PhysParticle *pStartItem, PhysParticle *pEndItem, QPointF StartPt, QPointF EndPt);
+    Arrow *createVector(QPointF StartPt, QPointF EndPt, PhysParticle * = NULL, PhysParticle * = NULL);
 
 
 public slots:
