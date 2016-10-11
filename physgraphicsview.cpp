@@ -14,6 +14,8 @@ void PhysGraphicsView::init(QMenu *pMenu) {
     myItemType = DiagramItem::Step;
     m_pLine = NULL;
     textItem = NULL;
+    m_pPolyItem = NULL;
+    m_pParticle = NULL;
     m_ItemColor = Qt::white;
     m_TextColor = Qt::black;
     m_LineColor = Qt::darkRed;
@@ -116,8 +118,8 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
             textItem ->setFont(m_Font);
             textItem ->setTextInteractionFlags(Qt::TextEditorInteraction);
             textItem ->setZValue(1000.0);
-            connect(textItem, SIGNAL(lostFocus(DiagramTextItem*)), this, SLOT(editorLostFocus(DiagramTextItem*)));
-            connect(textItem, SIGNAL(selectedChange(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+            connect(textItem, SIGNAL(lostFocus(DiagramTextItem *)), this, SLOT(editorLostFocus(DiagramTextItem *)));
+            connect(textItem, SIGNAL(selectedChange(QGraphicsItem *)), this, SIGNAL(itemSelected(QGraphicsItem *)));
             m_pScene ->addItem(textItem);
             textItem ->setDefaultTextColor(m_TextColor);
             textItem ->setPos(scenePos);
@@ -135,7 +137,10 @@ void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
         QLineF newLine(m_pLine ->line().p1(), scenePos);
         m_pLine ->setLine(newLine);
     }
-    else if (m_Mode == MoveItem) {
+    else if (m_Mode == MoveItem && m_pPolyItem) {
+        QGraphicsView::mouseMoveEvent(mouseEvent);
+    }
+    else if (m_Mode == MoveItem && m_pParticle) {
         QGraphicsView::mouseMoveEvent(mouseEvent);
     }
 }

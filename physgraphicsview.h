@@ -11,7 +11,7 @@
 class PhysGraphicsView : public QGraphicsView {
     Q_OBJECT
 public:
-    enum Mode { InsertItem, InsertLine, InsertText, MoveItem, InsertParticle };
+    enum Mode { InsertItem, InsertLine, InsertText, MoveItem, InsertParticle, MoveVector, MoveParticle };
 
     PhysGraphicsView(QMenu *, QGraphicsScene *, QWidget * = NULL);
 
@@ -57,6 +57,7 @@ private:
     QPointF m_pStartPoint;
     QGraphicsLineItem *m_pLine;
     QGraphicsPolygonItem *m_pPolyItem;
+    PhysParticle *m_pParticle;
     QFont m_Font;
     DiagramTextItem *textItem;
     QColor m_TextColor;

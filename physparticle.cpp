@@ -71,9 +71,14 @@ void PhysParticle::removeArrows() {
     }
 }
 
- void PhysParticle::addArrow(Arrow *pArrow) {
-     m_lstArrows.append(pArrow);
- }
+void PhysParticle::addArrow(Arrow *pArrow) {
+    m_lstArrows.append(pArrow);
+}
+
+void PhysParticle::updatePosition() {
+    foreach (Arrow *pArrow, m_lstArrows)
+        pArrow ->updatePosition();
+}
 
 QVariant PhysParticle::itemChange(GraphicsItemChange change, const QVariant &value) {
     if (change == QGraphicsItem::ItemPositionChange) {
