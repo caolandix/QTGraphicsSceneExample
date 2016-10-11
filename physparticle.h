@@ -24,9 +24,6 @@ public:
     void addArrow(Arrow *pArrow);
     QPointF pos() const { return m_currPos; }
 
-public slots:
-    void updatePosition();
-
 private:
     void init();
     int type() const { return Type; }

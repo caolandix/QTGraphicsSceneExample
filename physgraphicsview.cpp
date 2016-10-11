@@ -137,10 +137,7 @@ void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
         QLineF newLine(m_pLine ->line().p1(), scenePos);
         m_pLine ->setLine(newLine);
     }
-    else if (m_Mode == MoveItem && m_pPolyItem) {
-        QGraphicsView::mouseMoveEvent(mouseEvent);
-    }
-    else if (m_Mode == MoveItem && m_pParticle) {
+    else if (m_Mode == MoveItem) {
         QGraphicsView::mouseMoveEvent(mouseEvent);
     }
 }
@@ -176,10 +173,16 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
                 pArrow = createVector(m_pStartPoint, endPoint, pStartItem, NULL);
             }
         }
+        else if (endItems.count() > 0 && startItems.count() == 0) {
+            if (endItems.first() ->type() == PhysParticle::ParticleType) {
+                PhysParticle *pEndItem = qgraphicsitem_cast<PhysParticle *>(endItems.first());
+                pArrow = createVector(m_pStartPoint, endPoint, NULL, pEndItem);
+            }
+        }
 
         // just add a new vector and draw it.
         else {
-            pArrow = createVector(m_pStartPoint, endPoint);
+            pArrow = createVector(m_pStartPoint, endPoint, NULL, NULL);
         }
         m_pLine = NULL;
     }
@@ -195,10 +198,15 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
 
 Arrow *PhysGraphicsView::createVector(QPointF StartPt, QPointF EndPt, PhysParticle *pStartItem, PhysParticle *pEndItem) {
     Arrow *pArrow = new Arrow(StartPt, EndPt);
-    if (pStartItem)
+    pArrow ->startItem(pStartItem);
+    if (pStartItem) {
         pStartItem ->addArrow(pArrow);
-    if (pStartItem != pEndItem && pEndItem)
+        pArrow ->startItem(pStartItem);
+    }
+    if (pStartItem != pEndItem && pEndItem) {
         pEndItem ->addArrow(pArrow);
+        pArrow ->endItem(pEndItem);
+    }
     pArrow ->setColor(m_LineColor);
     pArrow ->setZValue(-1000.0);
     m_pScene ->addItem(pArrow);

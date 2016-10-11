@@ -16,7 +16,7 @@ Arrow::Arrow(PhysParticle *pStartItem, PhysParticle *pEndItem, QGraphicsItem *pP
     init(pStartItem, pEndItem);
 }
 
-Arrow::Arrow(PhysParticle *pStartItem, PhysParticle *pEndItem, QPointF startPoint, QPointF endPoint, QGraphicsItem *pParent) :
+Arrow::Arrow(QPointF startPoint, QPointF endPoint, PhysParticle *pStartItem, PhysParticle *pEndItem, QGraphicsItem *pParent) :
     QGraphicsLineItem(pParent), PhysBaseItem() {
     init(pStartItem, pEndItem);
     m_startPos = startPoint, m_endPos = endPoint;
@@ -27,6 +27,7 @@ void Arrow::init(PhysParticle *pStartItem, PhysParticle *pEndItem) {
     m_pStartItem = pStartItem;
     m_pEndItem = pEndItem;
     setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
     setFlag(QGraphicsItem::ItemIsMovable, true);
     m_Color = Qt::black;
     setPen(QPen(m_Color, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
@@ -40,10 +41,21 @@ QRectF Arrow::boundingRect() const {
 
 void Arrow::updatePosition() {
     if (m_pStartItem && m_pEndItem) {
-        QLineF line(mapFromItem(m_pStartItem, 0, 0), mapFromItem(m_pEndItem, 0, 0));
+        QLineF line(m_startPos = mapFromItem(m_pStartItem, 0, 0), m_endPos = mapFromItem(m_pEndItem, 0, 0));
         setLine(line);
     }
-
+    else if (m_pStartItem) {
+        QLineF line(m_startPos = mapFromItem(m_pStartItem, 0, 0), m_endPos);
+        setLine(line);
+    }
+    else if (m_pEndItem) {
+        QLineF line(m_startPos, m_endPos = mapFromItem(m_pEndItem, 0, 0));
+        setLine(line);
+    }
+    else {
+        QLineF line(m_startPos, m_endPos);
+        setLine(line);
+    }
 }
 
 void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {

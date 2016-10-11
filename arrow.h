@@ -24,12 +24,15 @@ public:
 
     Arrow(PhysParticle *, PhysParticle *, QGraphicsItem * = NULL);
     Arrow(QPointF, QPointF, QGraphicsItem * = NULL);
-    Arrow(PhysParticle *, PhysParticle *, QPointF, QPointF, QGraphicsItem * = NULL);
+    Arrow(QPointF, QPointF, PhysParticle *, PhysParticle *, QGraphicsItem * = NULL);
     int type() const { return Type; }
     QRectF boundingRect() const;
     void setColor(const QColor &color) { m_Color = color; }
     PhysParticle *startItem() const { return m_pStartItem; }
     PhysParticle *endItem() const { return m_pEndItem; }
+    void startItem(PhysParticle *pStartItem) { m_pStartItem = pStartItem; }
+    void endItem(PhysParticle *pEndItem) { m_pEndItem = pEndItem; }
+
 private:
     void init(PhysParticle * = NULL, PhysParticle * = NULL);
 
@@ -40,8 +43,7 @@ protected:
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget * = NULL);
 
 private:
-    PhysParticle *m_pStartItem;
-    PhysParticle *m_pEndItem;
+    PhysParticle *m_pStartItem, *m_pEndItem;
     QColor m_Color;
     QPointF m_startPos, m_endPos;
 };
