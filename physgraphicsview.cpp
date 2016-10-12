@@ -108,10 +108,12 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
             break;
         case InsertParticle:
             m_pStartPoint = scenePos;
+            /*
             m_pPolyItem = new QGraphicsPolygonItem(QPolygonF(QVector<QPointF>() << QPointF(0, 0)));
             m_pPolyItem ->setPen(QPen(m_particleColor));
             m_pPolyItem ->setBrush(m_particleColor);
             m_pScene ->addItem(m_pPolyItem);
+            */
             break;
         case InsertText:
             textItem = new DiagramTextItem();
@@ -186,12 +188,16 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
         }
         m_pLine = NULL;
     }
-    else if (m_pPolyItem && m_Mode == InsertParticle) {
+    else if (m_Mode == InsertParticle) {
+    // else if (m_pPolyItem && m_Mode == InsertParticle) {
+        // m_pScene ->removeItem(m_pPolyItem);
+        // delete m_pPolyItem;
+        // m_pPolyItem = NULL;
+
         PhysParticle *pParticle = new PhysParticle(m_pStartPoint);
         pParticle ->setColor(m_particleColor);
         pParticle ->setZValue(-1000.0);
         m_pScene ->addItem(pParticle);
-        m_pPolyItem = NULL;
     }
     QGraphicsView::mouseReleaseEvent(mouseEvent);
 }
