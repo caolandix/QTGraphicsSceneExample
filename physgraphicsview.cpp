@@ -134,7 +134,12 @@ void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
         QLineF newLine(m_pLine ->line().p1(), scenePos);
         m_pLine ->setLine(newLine);
     }
+
+    // While moving an item, display a crosshair at the beginning of the vector along with an angle
     else if (m_Mode == MoveItem) {
+        if (m_pLine) {
+            QList<QGraphicsItem *> lst = m_pScene ->items(scenePos);
+        }
         QGraphicsView::mouseMoveEvent(mouseEvent);
     }
 }

@@ -79,14 +79,11 @@ void DiagramItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     myContextMenu->exec(event->screenPos());
 }
 
- QVariant DiagramItem::itemChange(GraphicsItemChange change,
-                      const QVariant &value)
- {
+ QVariant DiagramItem::itemChange(GraphicsItemChange change, const QVariant &value) {
      if (change == QGraphicsItem::ItemPositionChange) {
          foreach (Arrow *arrow, arrows) {
              arrow->updatePosition();
          }
      }
-
      return value;
  }

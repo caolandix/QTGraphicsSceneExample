@@ -65,6 +65,10 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     painter ->setBrush(m_Color);
     QPointF startPos, endPos;
 
+    if (m_pStartItem && m_pEndItem) {
+        if (m_pStartItem ->collidesWithItem(m_pEndItem))
+            return;
+    }
     /*
     if (m_pStartItem && m_pEndItem) {
         if (m_pStartItem ->collidesWithItem(m_pEndItem))
