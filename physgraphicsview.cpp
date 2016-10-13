@@ -195,6 +195,7 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
         // m_pPolyItem = NULL;
 
         PhysParticle *pParticle = new PhysParticle(m_pStartPoint);
+        pParticle ->setPolygon(pParticle ->shape().toFillPolygon(transform()));
         pParticle ->setColor(m_particleColor);
         pParticle ->setZValue(-1000.0);
         m_pScene ->addItem(pParticle);
