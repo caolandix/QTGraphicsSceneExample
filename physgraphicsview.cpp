@@ -68,6 +68,7 @@ void PhysGraphicsView::setFont(const QFont &font) {
 
     if (isItemChange(DiagramTextItem::Type)) {
         QGraphicsTextItem *pItem = qgraphicsitem_cast<DiagramTextItem *>(m_pScene ->selectedItems().first());
+
         //At this point the selection can change so the first selected item might not be a DiagramTextItem
         if (pItem)
             pItem ->setFont(m_Font);
@@ -108,12 +109,6 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
             break;
         case InsertParticle:
             m_pStartPoint = scenePos;
-            /*
-            m_pPolyItem = new QGraphicsPolygonItem(QPolygonF(QVector<QPointF>() << QPointF(0, 0)));
-            m_pPolyItem ->setPen(QPen(m_particleColor));
-            m_pPolyItem ->setBrush(m_particleColor);
-            m_pScene ->addItem(m_pPolyItem);
-            */
             break;
         case InsertText:
             textItem = new DiagramTextItem();
@@ -189,11 +184,6 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
         m_pLine = NULL;
     }
     else if (m_Mode == InsertParticle) {
-    // else if (m_pPolyItem && m_Mode == InsertParticle) {
-        // m_pScene ->removeItem(m_pPolyItem);
-        // delete m_pPolyItem;
-        // m_pPolyItem = NULL;
-
         PhysParticle *pParticle = new PhysParticle(m_pStartPoint);
         pParticle ->setPolygon(pParticle ->shape().toFillPolygon(transform()));
         pParticle ->setColor(m_particleColor);

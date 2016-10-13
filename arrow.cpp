@@ -65,6 +65,7 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     painter ->setBrush(m_Color);
     QPointF startPos, endPos;
 
+    /*
     if (m_pStartItem && m_pEndItem) {
         if (m_pStartItem ->collidesWithItem(m_pEndItem))
             return;
@@ -84,11 +85,15 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
         }
         startPos = m_pStartItem ->pos();
         endPos = intersectPoint;
-    }
-    else {
+
         endPos = m_endPos;
         startPos = m_startPos;
+
     }
+    else {
+*/
+    endPos = m_endPos;
+    startPos = m_startPos;
     setLine(QLineF(endPos, startPos));
     double angle = ::acos(line().dx() / line().length());
 
