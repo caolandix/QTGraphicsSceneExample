@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     diagramtextitem.cpp \
     physgraphicsview.cpp \
     physparticle.cpp \
-    physbaseitem.cpp
+    physbaseitem.cpp \
+    physvectoranglecartesian.cpp
 
 HEADERS  += mainwindow.h \
     arrow.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     diagramtextitem.h \
     physgraphicsview.h \
     physparticle.h \
-    physbaseitem.h
+    physbaseitem.h \
+    physvectoranglecartesian.h
 
 FORMS    += mainwindow.ui
 
