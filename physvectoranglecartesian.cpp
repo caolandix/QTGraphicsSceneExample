@@ -1,10 +1,5 @@
 #include "physvectoranglecartesian.h"
 
-PhysVectorAngleCartesian::PhysVectorAngleCartesian()
-{
-
-}
-
 PhysVectorAngleCartesian::PhysVectorAngleCartesian(QGraphicsItem *pParent, QGraphicsScene *pScene) :
     PhysBaseItem(), QGraphicsPolygonItem(pParent) {
     init();
@@ -22,25 +17,36 @@ PhysVectorAngleCartesian::~PhysVectorAngleCartesian() {
 
 void PhysVectorAngleCartesian::init() {
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
-    m_Color = Qt::black;
+    m_Color = Qt::gray;
+    m_ellipseBounds = { -5, -5, 15, 15 };
 
 }
 
 QPainterPath PhysVectorAngleCartesian::shape() const {
     QPainterPath path;
-    path.addEllipse(-10, -10, 20, 20);
+    path.addEllipse(m_ellipseBounds);
     return path;
 }
 
 QRectF PhysVectorAngleCartesian::boundingRect() const {
-    const qreal adjust = 2.0;
-    return QRectF(-10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
+    const qreal adjust = 5.0;
+    return QRectF(
+                m_ellipseBounds.left() - adjust,
+                m_ellipseBounds.top() - adjust,
+                m_ellipseBounds.right() + adjust,
+                m_ellipseBounds.bottom() + adjust
+                );
 }
 
 void PhysVectorAngleCartesian::paint(QPainter *pPainter, const QStyleOptionGraphicsItem *pOption, QWidget *) {
+    const qreal offset = -2;
     pPainter -> setPen(Qt::NoPen);
     pPainter -> setBrush(Qt::darkGray);
-    pPainter -> drawEllipse(-7, -7, 20, 20);
+    pPainter -> drawEllipse(
+                m_ellipseBounds.top() + offset,
+                m_ellipseBounds.left() + offset,
+                m_ellipseBounds.right(),
+                m_ellipseBounds.bottom());
 
     QRadialGradient gradient(-3, -3, 10);
     if (pOption -> state & QStyle::State_Sunken) {
@@ -55,33 +61,11 @@ void PhysVectorAngleCartesian::paint(QPainter *pPainter, const QStyleOptionGraph
     }
     pPainter -> setBrush(gradient);
     pPainter -> setPen(QPen(Qt::black, 0));
-    pPainter -> drawEllipse(-10, -10, 20, 20);
-}
-
-void PhysVectorAngleCartesian::removeArrow(Arrow *pArrow)  {
-    int index = m_lstArrows.indexOf(pArrow);
-
-    if (index != -1)
-        m_lstArrows.removeAt(index);
-}
-
-void PhysVectorAngleCartesian::removeArrows() {
-    foreach (Arrow *pArrow, m_lstArrows) {
-        pArrow ->startItem() ->removeArrow(pArrow);
-        pArrow ->endItem() ->removeArrow(pArrow);
-        scene() ->removeItem(pArrow);
-        delete pArrow;
-    }
-}
-
-void PhysVectorAngleCartesian::addArrow(Arrow *pArrow) {
-    m_lstArrows.append(pArrow);
+    pPainter -> drawEllipse(m_ellipseBounds);
 }
 
 QVariant PhysVectorAngleCartesian::itemChange(GraphicsItemChange change, const QVariant &value) {
     if (change == QGraphicsItem::ItemPositionChange) {
-        foreach (Arrow *pArrow, m_lstArrows)
-            pArrow ->updatePosition();
     }
     return value;
 }

@@ -1,6 +1,8 @@
 #ifndef PHYSVECTORANGLECARTESIAN_H
 #define PHYSVECTORANGLECARTESIAN_H
 
+#include <QtWidgets>
+
 #include "physbaseitem.h"
 #include "arrow.h"
 
@@ -17,9 +19,6 @@ public:
     QRectF boundingRect() const;
     void setColor(const QColor &color) { m_Color = color; }
 
-    void removeArrow(Arrow *pArrow);
-    void removeArrows();
-    void addArrow(Arrow *pArrow);
     QPointF pos() const { return m_currPos; }
 
 private:
@@ -33,6 +32,7 @@ protected:
 private:
     QColor m_Color;
     QPointF m_currPos;
+    QRectF m_ellipseBounds;
 };
 Q_DECLARE_METATYPE(PhysVectorAngleCartesian *)
 

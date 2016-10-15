@@ -16,6 +16,7 @@ void PhysGraphicsView::init(QMenu *pMenu) {
     textItem = NULL;
     m_pPolyItem = NULL;
     m_pParticle = NULL;
+    m_pAngleDisplay = NULL;
     m_ItemColor = Qt::white;
     m_TextColor = Qt::black;
     m_LineColor = Qt::darkRed;
@@ -106,6 +107,7 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
             m_pLine = new QGraphicsLineItem(QLineF(scenePos, scenePos));
             m_pLine ->setPen(QPen(m_LineColor, 2));
             m_pScene ->addItem(m_pLine);
+            m_pAngleDisplay = new PhysVectorAngleCartesian(scenePos, m_pLine);
             break;
         case InsertParticle:
             m_pStartPoint = scenePos;
@@ -133,6 +135,11 @@ void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
     if (m_Mode == InsertLine && m_pLine) {
         QLineF newLine(m_pLine ->line().p1(), scenePos);
         m_pLine ->setLine(newLine);
+
+        m_pAngleDisplay ->setPolygon(m_pAngleDisplay ->shape().toFillPolygon(transform()));
+        m_pAngleDisplay ->setZValue(-1000.0);
+        m_pScene ->addItem(m_pAngleDisplay);
+
     }
 
     // While moving an item, display a crosshair at the beginning of the vector along with an angle

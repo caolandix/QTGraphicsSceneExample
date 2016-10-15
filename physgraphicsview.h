@@ -6,6 +6,7 @@
 #include "diagramitem.h"
 #include "diagramtextitem.h"
 #include "physparticle.h"
+#include "physvectoranglecartesian.h"
 
 
 class PhysGraphicsView : public QGraphicsView {
@@ -58,6 +59,7 @@ private:
     QGraphicsLineItem *m_pLine;
     QGraphicsPolygonItem *m_pPolyItem;
     PhysParticle *m_pParticle;
+    PhysVectorAngleCartesian *m_pAngleDisplay;
     QFont m_Font;
     DiagramTextItem *textItem;
     QColor m_TextColor;
