@@ -52,12 +52,12 @@ void PhysVectorAngleCartesian::paint(QPainter *pPainter, const QStyleOptionGraph
     if (pOption -> state & QStyle::State_Sunken) {
         gradient.setCenter(3, 3);
         gradient.setFocalPoint(3, 3);
-        gradient.setColorAt(1, QColor(Qt::green).light(120));
-        gradient.setColorAt(0, QColor(Qt::darkGreen).light(120));
+        gradient.setColorAt(1, QColor(Qt::red).light(120));
+        gradient.setColorAt(0, QColor(Qt::darkRed).light(120));
     }
     else {
-        gradient.setColorAt(0, Qt::green);
-        gradient.setColorAt(1, Qt::darkGreen);
+        gradient.setColorAt(0, Qt::red);
+        gradient.setColorAt(1, Qt::darkRed);
     }
     pPainter -> setBrush(gradient);
     pPainter -> setPen(QPen(Qt::black, 0));

@@ -155,6 +155,10 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
     QPointF endPoint = mapToScene(mouseEvent ->pos());
 
     if (m_pLine != NULL && m_Mode == InsertLine) {
+        if (m_pAngleDisplay) {
+            m_pScene ->removeItem(m_pAngleDisplay);
+            delete m_pAngleDisplay; m_pAngleDisplay = NULL;
+        }
         QList<QGraphicsItem *> startItems = m_pScene ->items(m_pLine ->line().p1());
         if (startItems.count() && startItems.first() == m_pLine)
             startItems.removeFirst();
