@@ -33,6 +33,9 @@ public:
     void startItem(PhysParticle *pStartItem) { m_pStartItem = pStartItem; }
     void endItem(PhysParticle *pEndItem) { m_pEndItem = pEndItem; }
 
+    QPointF startPos() const { return m_startPos; }
+    QPointF endPos() const { return m_endPos; }
+
 private:
     void init(PhysParticle * = NULL, PhysParticle * = NULL);
 

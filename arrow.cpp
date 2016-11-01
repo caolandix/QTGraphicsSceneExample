@@ -69,33 +69,6 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
         if (m_pStartItem ->collidesWithItem(m_pEndItem))
             return;
     }
-    /*
-    if (m_pStartItem && m_pEndItem) {
-        if (m_pStartItem ->collidesWithItem(m_pEndItem))
-            return;
-        QLineF centerLine(m_pStartItem ->pos(), m_pEndItem ->pos());
-        QPolygonF endPolygon = m_pEndItem ->polygon();
-        QPointF p1 = endPolygon.first() + m_pEndItem ->pos();
-        QPointF p2;
-        QPointF intersectPoint;
-        QLineF polyLine;
-        for (int i = 1; i < endPolygon.count(); ++i) {
-            p2 = endPolygon.at(i) + m_pEndItem ->pos();
-            polyLine = QLineF(p1, p2);
-            QLineF::IntersectType intersectType = polyLine.intersect(centerLine, &intersectPoint);
-            if (intersectType == QLineF::BoundedIntersection)
-                break;
-            p1 = p2;
-        }
-        startPos = m_pStartItem ->pos();
-        endPos = intersectPoint;
-
-        endPos = m_endPos;
-        startPos = m_startPos;
-
-    }
-    else {
-*/
     endPos = m_endPos;
     startPos = m_startPos;
     setLine(QLineF(endPos, startPos));

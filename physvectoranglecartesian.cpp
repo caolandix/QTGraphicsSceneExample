@@ -1,4 +1,5 @@
 #include "physvectoranglecartesian.h"
+#include "arrow.h"
 
 PhysVectorAngleCartesian::PhysVectorAngleCartesian(QGraphicsItem *pParent, QGraphicsScene *pScene) :
     PhysBaseItem(), QGraphicsPolygonItem(pParent) {
@@ -40,28 +41,26 @@ QRectF PhysVectorAngleCartesian::boundingRect() const {
 
 void PhysVectorAngleCartesian::paint(QPainter *pPainter, const QStyleOptionGraphicsItem *pOption, QWidget *) {
     const qreal offset = -2;
-    pPainter -> setPen(Qt::NoPen);
-    pPainter -> setBrush(Qt::darkGray);
-    pPainter -> drawEllipse(
-                m_ellipseBounds.top() + offset,
-                m_ellipseBounds.left() + offset,
-                m_ellipseBounds.right(),
-                m_ellipseBounds.bottom());
+    pPainter -> setPen(Qt::SolidLine);
+    pPainter -> setBrush(Qt::darkGreen);
 
-    QRadialGradient gradient(-3, -3, 10);
-    if (pOption -> state & QStyle::State_Sunken) {
-        gradient.setCenter(3, 3);
-        gradient.setFocalPoint(3, 3);
-        gradient.setColorAt(1, QColor(Qt::red).light(120));
-        gradient.setColorAt(0, QColor(Qt::darkRed).light(120));
-    }
-    else {
-        gradient.setColorAt(0, Qt::red);
-        gradient.setColorAt(1, Qt::darkRed);
-    }
-    pPainter -> setBrush(gradient);
-    pPainter -> setPen(QPen(Qt::black, 0));
-    pPainter -> drawEllipse(m_ellipseBounds);
+
+    QGraphicsItem *pObj = parentItem();
+    Arrow *pParent = static_cast<Arrow *>(pObj);
+
+    QPointF parentStartPos = pParent -> startPos();
+    QPointF parentEndPos = pParent -> endPos();
+
+    QPointF horizLineStart = parentStartPos;
+    QPointF horizLineEnd(horizLineStart.x() + parentEndPos.x(), parentStartPos.y());
+
+    QPointF vertLineStart = parentStartPos;
+    QPointF vertLineEnd(horizLineStart.x(), horizLineStart.y() + parentEndPos.y());
+    QLineF horizLine(horizLineStart, horizLineEnd);
+    QLineF vertLine(vertLineStart, vertLineEnd);
+
+    pPainter ->drawLine(horizLine);
+    pPainter ->drawLine(vertLine);
 }
 
 QVariant PhysVectorAngleCartesian::itemChange(GraphicsItemChange change, const QVariant &value) {
