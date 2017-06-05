@@ -51,6 +51,13 @@ void PhysVectorAngleCartesian::paint(QPainter *pPainter, const QStyleOptionGraph
     QPointF parentStartPos = pParent -> startPos();
     QPointF parentEndPos = pParent -> endPos();
 
+    QRectF rc = scene() ->sceneRect();
+
+    // if position rect is outside of drawing rect, do nothing...
+    if (!rc.contains(parentStartPos) ||  !rc.contains(parentEndPos)) {
+        return;
+    }
+
     QPointF horizLineStart = parentStartPos;
     QPointF horizLineEnd(horizLineStart.x() + parentEndPos.x(), parentStartPos.y());
 

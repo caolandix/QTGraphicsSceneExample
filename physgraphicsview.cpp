@@ -183,6 +183,11 @@ void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
 void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
     QPointF endPoint = mapToScene(mouseEvent ->pos());
 
+    if (m_pAngleDisplay && m_Mode == InsertLine) {
+        m_pScene ->removeItem(m_pAngleDisplay);
+        delete m_pAngleDisplay; m_pAngleDisplay = NULL;
+    }
+
     if (m_pLine != NULL && m_Mode == InsertLine) {
         if (m_pAngleDisplay) {
             m_pScene ->removeItem(m_pAngleDisplay);

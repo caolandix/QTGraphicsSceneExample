@@ -64,13 +64,13 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     painter ->setPen(myPen);
     painter ->setBrush(m_Color);
     QPointF startPos, endPos;
+    endPos = m_endPos;
+    startPos = m_startPos;
 
     if (m_pStartItem && m_pEndItem) {
         if (m_pStartItem ->collidesWithItem(m_pEndItem))
             return;
     }
-    endPos = m_endPos;
-    startPos = m_startPos;
     setLine(QLineF(endPos, startPos));
     double angle = ::acos(line().dx() / line().length());
 
@@ -106,5 +106,51 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
         painter ->drawLine(myLine);
         myLine.translate(0, -8.0);
         painter ->drawLine(myLine);
+    }
+
+    // If we have beginning item, check to see if vector still inside of it.
+    if (m_pStartItem) {
+        QRectF rc = m_pStartItem ->sceneBoundingRect();
+        if (rc.contains(m_startPos)) {
+
+            // no longer inside of the starting item. Drop it and set the value to NULL
+            m_pStartItem ->removeArrow(this);
+            m_pStartItem = NULL;
+        }
+    }
+    // If we have end item, check to see if vector still inside of it.
+    if (m_pEndItem) {
+        QRectF rc = m_pEndItem ->sceneBoundingRect();
+        if (rc.contains(m_endPos)) {
+            // no longer inside of the starting item. Drop it and set the value to NULL
+            m_pEndItem ->removeArrow(this);
+            m_pEndItem = NULL;
+        }
+    }
+
+    // Check to see if we collide with items. If a collision occurs then handle accordingly.
+    QList<QGraphicsItem *> lstPhysGraphicsObjs = collidingItems();
+
+    if (lstPhysGraphicsObjs.length() > 0) {
+        foreach (QGraphicsItem *pItem, lstPhysGraphicsObjs) {
+            switch (pItem ->type()) {
+            case ParticleType:
+                PhysParticle *pParticle = (PhysParticle *)pItem;
+                if (!m_pStartItem && pParticle ->sceneBoundingRect().contains(m_startPos)) {
+                    pParticle ->addArrow(this);
+                    m_pStartItem = pParticle;
+                }
+                else {
+                    if (!m_pEndItem) {
+                        QRectF rc = pParticle ->sceneBoundingRect();
+                        if (rc.contains(m_endPos)) {
+                            pParticle ->addArrow(this);
+                            m_pEndItem = pParticle;
+                        }
+                    }
+                }
+                break;
+            }
+        }
     }
 }
