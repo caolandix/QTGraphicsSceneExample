@@ -62,12 +62,14 @@ void MainWindow::buttonGroupClicked(int id) {
         if (buttonGroup ->button(id) != button)
             button ->setChecked(false);
     }
-    if (id == InsertTextButton) {
+    switch (id) {
+    case InsertTextButton:
         view ->setMode(PhysGraphicsView::InsertText);
-    }
-    else {
+        break;
+    default:
         view ->setItemType(DiagramItem::DiagramType(id));
         view ->setMode(PhysGraphicsView::InsertItem);
+        break;
     }
 }
 
@@ -205,8 +207,7 @@ void MainWindow::handleFontChange() {
 }
 
 void MainWindow::onItemSelected(QGraphicsItem *item) {
-    DiagramTextItem *textItem =
-    qgraphicsitem_cast<DiagramTextItem *>(item);
+    DiagramTextItem *textItem = qgraphicsitem_cast<DiagramTextItem *>(item);
 
     QFont font = textItem->font();
     fontCombo ->setCurrentFont(font);

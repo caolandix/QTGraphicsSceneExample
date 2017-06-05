@@ -12,7 +12,7 @@
 class PhysGraphicsView : public QGraphicsView {
     Q_OBJECT
 public:
-    enum Mode { InsertItem, InsertLine, InsertText, MoveItem, InsertParticle, MoveVector, MoveParticle };
+    enum Mode { SelectItem, InsertItem, InsertLine, InsertText, MoveItem, InsertParticle, MoveVector, MoveParticle };
 
     PhysGraphicsView(QMenu *, QGraphicsScene *, QWidget * = NULL);
 

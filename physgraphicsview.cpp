@@ -95,34 +95,55 @@ void PhysGraphicsView::mousePressEvent(QMouseEvent *mouseEvent) {
     DiagramItem *pItem = NULL;
 
     switch (m_Mode) {
-        case InsertItem:
-            pItem = new DiagramItem(myItemType, myItemMenu);
-            pItem ->setBrush(m_ItemColor);
-            m_pScene ->addItem(pItem);
-            pItem ->setPos(scenePos);
-            emit itemInserted(pItem);
-            break;
-        case InsertLine:
-            m_pStartPoint = scenePos;
-            m_pLine = new QGraphicsLineItem(QLineF(scenePos, scenePos));
-            m_pLine ->setPen(QPen(m_LineColor, 2));
-            m_pScene ->addItem(m_pLine);
-            m_pAngleDisplay = new PhysVectorAngleCartesian(scenePos, m_pLine);
-            break;
-        case InsertParticle:
-            m_pStartPoint = scenePos;
-            break;
-        case InsertText:
-            textItem = new DiagramTextItem();
-            textItem ->setFont(m_Font);
-            textItem ->setTextInteractionFlags(Qt::TextEditorInteraction);
-            textItem ->setZValue(1000.0);
-            connect(textItem, SIGNAL(lostFocus(DiagramTextItem *)), this, SLOT(editorLostFocus(DiagramTextItem *)));
-            connect(textItem, SIGNAL(selectedChange(QGraphicsItem *)), this, SIGNAL(itemSelected(QGraphicsItem *)));
-            m_pScene ->addItem(textItem);
-            textItem ->setDefaultTextColor(m_TextColor);
-            textItem ->setPos(scenePos);
-            emit textInserted(textItem);
+    case InsertItem:
+        pItem = new DiagramItem(myItemType, myItemMenu);
+        pItem ->setBrush(m_ItemColor);
+        m_pScene ->addItem(pItem);
+        pItem ->setPos(scenePos);
+        emit itemInserted(pItem);
+        break;
+    case InsertLine:
+        m_pStartPoint = scenePos;
+        m_pLine = new QGraphicsLineItem(QLineF(scenePos, scenePos));
+        m_pLine ->setPen(QPen(m_LineColor, 2));
+        m_pScene ->addItem(m_pLine);
+        m_pAngleDisplay = new PhysVectorAngleCartesian(scenePos, m_pLine);
+        break;
+    case InsertParticle:
+        m_pStartPoint = scenePos;
+        break;
+    case InsertText:
+        textItem = new DiagramTextItem();
+        textItem ->setFont(m_Font);
+        textItem ->setTextInteractionFlags(Qt::TextEditorInteraction);
+        textItem ->setZValue(1000.0);
+        connect(textItem, SIGNAL(lostFocus(DiagramTextItem *)), this, SLOT(editorLostFocus(DiagramTextItem *)));
+        connect(textItem, SIGNAL(selectedChange(QGraphicsItem *)), this, SIGNAL(itemSelected(QGraphicsItem *)));
+        m_pScene ->addItem(textItem);
+        textItem ->setDefaultTextColor(m_TextColor);
+        textItem ->setPos(scenePos);
+        emit textInserted(textItem);
+        break;
+    case MoveItem:
+    {
+        QGraphicsItem *pItem = m_pScene ->itemAt(scenePos, transform());
+        QList<QGraphicsItem *> lst = m_pScene ->items(scenePos);
+
+
+        if (lst.count() > 0) {
+            QGraphicsItem *pItem = lst.front();
+            switch (pItem ->type()) {
+            case PhysParticle::ParticleType:
+                m_pParticle = qgraphicsitem_cast<PhysParticle *>(pItem);
+                break;
+            case PhysParticle::VectorType:
+                m_pLine = qgraphicsitem_cast<Arrow *>(pItem);
+                break;
+            }
+
+        }
+    }
+        break;
     default:
         ;
     }
@@ -144,11 +165,19 @@ void PhysGraphicsView::mouseMoveEvent(QMouseEvent *mouseEvent) {
 
     // While moving an item, display a crosshair at the beginning of the vector along with an angle
     else if (m_Mode == MoveItem) {
-        if (m_pLine) {
-            QList<QGraphicsItem *> lst = m_pScene ->items(scenePos);
+        PhysParticle *pParticle = NULL;
+        Arrow *pLine = NULL;
+        QList<QGraphicsItem *> lst = m_pScene ->items(scenePos);
+        switch (lst.first() ->type()) {
+        case PhysParticle::ParticleType:
+            pParticle = qgraphicsitem_cast<PhysParticle *>(lst.first());
+            break;
+        case PhysParticle::VectorType:
+            pLine = qgraphicsitem_cast<Arrow *>(lst.first());
+            break;
         }
-        QGraphicsView::mouseMoveEvent(mouseEvent);
     }
+    QGraphicsView::mouseMoveEvent(mouseEvent);
 }
 
 void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
@@ -168,6 +197,7 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
 
         m_pScene ->removeItem(m_pLine);
         delete m_pLine;
+        m_pLine = NULL;
 
         Arrow *pArrow = NULL;
 
@@ -197,7 +227,6 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
         else {
             pArrow = createVector(m_pStartPoint, endPoint, NULL, NULL);
         }
-        m_pLine = NULL;
     }
     else if (m_Mode == InsertParticle) {
         PhysParticle *pParticle = new PhysParticle(m_pStartPoint);
@@ -205,6 +234,34 @@ void PhysGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
         pParticle ->setColor(m_particleColor);
         pParticle ->setZValue(-1000.0);
         m_pScene ->addItem(pParticle);
+    }
+    else if (m_Mode == MoveItem) {
+
+        // handle the particle...
+        if (m_pParticle) {
+            // Check to see if it collides with any objects
+
+        }
+        // if the line object is valid then we selected a line
+        /*
+         * if (m_pLine) {
+
+            QList<QGraphicsItem *> startItems = m_pScene ->items(m_pLine ->line().p1());
+            QList<QGraphicsItem *> endItems = m_pScene ->items(m_pLine ->line().p2());
+
+            // Are we moving a particle or a vector?
+            if (startItems.count() > 0 && endItems.count() > 0) {
+                if (startItems.first() ->type() == PhysParticle::ParticleType) {
+                    bool val = true;
+                }
+                else if (startItems.first() ->type() == PhysParticle::VectorType) {
+                    bool val = true;
+                }
+            }
+            m_pLine = NULL;
+
+        }
+        */
     }
     QGraphicsView::mouseReleaseEvent(mouseEvent);
 }
