@@ -14,6 +14,7 @@ MainWindow::MainWindow() {
     createToolBox();
     createMenus();
 
+    bool b = false;
     scene = new QGraphicsScene(this);
     scene ->setSceneRect(QRectF(0, 0, 640, 480));
     createToolbars();
